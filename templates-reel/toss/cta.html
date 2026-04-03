@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: #191F28;
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .headline {
+      font-size: 72px; font-weight: 800; color: #FFFFFF; text-align: center;
+      line-height: 1.35; word-break: keep-all; margin-bottom: 24px;
+    }
+    .subtext {
+      font-size: 36px; font-weight: 400; color: #6B7684; text-align: center;
+      margin-bottom: 48px; word-break: keep-all;
+    }
+    .cta-button {
+      background: {{accent_color}}; color: #FFFFFF;
+      font-size: 40px; font-weight: 700; padding: 20px 64px;
+      border-radius: 12px; border: none; font-family: inherit; margin-bottom: 36px;
+    }
+    .tag-row { display: flex; gap: 12px; }
+    .tag { font-size: 28px; font-weight: 400; color: #4E5968; }
+    .brand {
+      position: absolute; bottom: 440px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .brand-name { font-size: 26px; font-weight: 500; color: #4E5968; }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h2 class="headline">{{headline}}</h2>
+    <p class="subtext">{{subtext}}</p>
+    <button class="cta-button">{{cta_text}}</button>
+    <div class="tag-row">
+      <span class="tag">{{tag1}}</span>
+      <span class="tag">{{tag2}}</span>
+      <span class="tag">{{tag3}}</span>
+    </div>
+  </div>
+  <div class="brand"><span class="brand-name">{{account_name}}</span></div>
+</body>
+</html>

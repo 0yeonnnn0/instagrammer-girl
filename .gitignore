@@ -1,0 +1,7 @@
+node_modules/
+output/
+sample-output/
+logs/
+scripts/topic-history.json
+.DS_Store
+.env

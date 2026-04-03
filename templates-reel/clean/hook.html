@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reel Hook</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #F0F0F0;
+      font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Safe zone: top 250px, bottom 400px → content area 1270px */
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 300px 80px 450px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: {{accent_color}};
+      color: #FFFFFF;
+      font-size: 32px;
+      font-weight: 700;
+      padding: 12px 36px;
+      border-radius: 50px;
+      margin-bottom: 48px;
+      letter-spacing: 0.05em;
+    }
+
+    .headline {
+      font-size: 96px;
+      font-weight: 900;
+      color: #1A1A1A;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: -0.03em;
+      word-break: keep-all;
+      margin-bottom: 40px;
+    }
+
+    .highlight {
+      background: linear-gradient(to top, {{accent_color}}66 45%, transparent 45%);
+      color: #1A1A1A;
+      padding: 0 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .subtext {
+      font-size: 42px;
+      font-weight: 400;
+      color: #9CA3AF;
+      text-align: center;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+
+    .brand {
+      position: absolute;
+      bottom: 440px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: {{accent_color}};
+    }
+
+    .brand-name {
+      font-size: 28px;
+      font-weight: 600;
+      color: #BFBFBF;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="badge">{{badge_text}}</div>
+    <h1 class="headline">{{headline}}</h1>
+    <p class="subtext">{{subtext}}</p>
+  </div>
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+</body>
+</html>

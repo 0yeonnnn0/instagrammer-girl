@@ -1,0 +1,22 @@
+{
+  "name": "instagram-card-news",
+  "version": "1.0.0",
+  "description": "Instagram card news generator with team agent orchestration",
+  "scripts": {
+    "render": "node scripts/render.js",
+    "render:reel": "node scripts/render-reel.js",
+    "upload:reel": "node scripts/upload-reel.js",
+    "upload:carousel": "node scripts/upload-carousel.js",
+    "sample": "node scripts/generate-samples.js",
+    "daily": "node scripts/daily.js",
+    "daily:dry-run": "node scripts/daily.js --dry-run",
+    "schedule:install": "bash automation/install.sh",
+    "schedule:uninstall": "bash automation/uninstall.sh",
+    "schedule:status": "launchctl list | grep cardnews"
+  },
+  "dependencies": {
+    "cloudinary": "^2.9.0",
+    "dotenv": "^17.3.1",
+    "puppeteer": "^23.0.0"
+  }
+}

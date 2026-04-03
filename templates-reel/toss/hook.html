@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: #191F28;
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .badge {
+      display: inline-block; background: {{accent_color}}; color: #FFFFFF;
+      font-size: 30px; font-weight: 700; padding: 10px 32px; border-radius: 8px;
+      margin-bottom: 48px; letter-spacing: 0.03em;
+    }
+    .headline {
+      font-size: 88px; font-weight: 800; color: #FFFFFF; text-align: center;
+      line-height: 1.35; letter-spacing: -0.03em; word-break: keep-all; margin-bottom: 40px;
+    }
+    .subtext {
+      font-size: 40px; font-weight: 400; color: #8B95A1; text-align: center;
+      line-height: 1.6; word-break: keep-all;
+    }
+    .brand {
+      position: absolute; bottom: 440px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .brand-name { font-size: 26px; font-weight: 500; color: #4E5968; }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="badge">{{badge_text}}</div>
+    <h1 class="headline">{{headline}}</h1>
+    <p class="subtext">{{subtext}}</p>
+  </div>
+  <div class="brand">
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+</body>
+</html>

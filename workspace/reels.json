@@ -1,0 +1,65 @@
+[
+  {
+    "scene": 1,
+    "type": "hook",
+    "badge_text": "🚨 속보",
+    "headline": "Claude Code\n소스코드\n전부 유출됐다",
+    "subtext": ".npmignore 실수 하나로",
+    "duration": 2
+  },
+  {
+    "scene": 2,
+    "type": "stat",
+    "headline": "유출 규모",
+    "emphasis": "512,000",
+    "subtext": "줄의 소스코드",
+    "body": "파일 1,906개 · 59.8MB\nnpm 패키지 한 번 배포에\n전부 새어나갔다",
+    "duration": 3
+  },
+  {
+    "scene": 3,
+    "type": "point",
+    "badge_number": "01",
+    "headline": ".npmignore\n실수 하나",
+    "body": "`.map` 파일 제외 누락\n→ 소스맵이 npm에 포함\n→ 전체 코드 주소 노출\n→ 누구나 다운로드 가능",
+    "duration": 3
+  },
+  {
+    "scene": 4,
+    "type": "list",
+    "headline": "유출된 미공개 기능들",
+    "item1": "KAIROS — 밤에 혼자 학습하는 AI 데몬",
+    "item2": "ULTRAPLAN — 30분짜리 클라우드 계획",
+    "item3": "Coordinator — 멀티 에이전트 오케스트레이션",
+    "item4": "Undercover — AI 기여 표시 숨김 기능",
+    "item5": "BUDDY — 18종 터미널 다마고치 펫",
+    "duration": 3.5
+  },
+  {
+    "scene": 5,
+    "type": "highlight",
+    "headline": "유출 후 23분",
+    "emphasis": "3,200만 뷰\n돌파",
+    "body": "X(트위터) 단 하루 만에\nDMCA 8,100건 → 실수로\n자사 저장소까지 삭제",
+    "duration": 3
+  },
+  {
+    "scene": 6,
+    "type": "point",
+    "badge_number": "02",
+    "headline": "GitHub 역대\n최고 성장 속도",
+    "body": "유출 코드 기반 'claw-code'\n2시간 만에 ★10만 5천\nTypeScript → Python 재작성\nDMCA로 막을 수 없었다",
+    "duration": 3
+  },
+  {
+    "scene": 7,
+    "type": "cta",
+    "headline": "AI 업계 뉴스\n매일 받고 싶다면?",
+    "subtext": "팔로우하고 놓치지 마세요",
+    "cta_text": "팔로우하기",
+    "tag1": "#ClaudeCode유출",
+    "tag2": "#AI보안",
+    "tag3": "#개발자뉴스",
+    "duration": 2
+  }
+]

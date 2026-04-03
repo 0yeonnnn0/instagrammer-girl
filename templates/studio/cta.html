@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    color: #191919;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .frame-top {
+    position: absolute;
+    top: 200px;
+    left: 120px;
+    right: 120px;
+    height: 1px;
+    background: {{accent_color}};
+  }
+
+  .frame-bottom {
+    position: absolute;
+    bottom: 260px;
+    left: 120px;
+    right: 120px;
+    height: 1px;
+    background: {{accent_color}};
+  }
+
+  .content {
+    position: absolute;
+    left: 120px;
+    right: 120px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .headline {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: #191919;
+    word-break: keep-all;
+    margin-bottom: 28px;
+  }
+
+  .subtext {
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #7A7A72;
+    word-break: keep-all;
+    margin-bottom: 72px;
+    max-width: 640px;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 22px 64px;
+    border: 1px solid {{accent_color}};
+    font-size: 28px;
+    font-weight: 600;
+    color: {{accent_color}};
+    letter-spacing: 0.04em;
+    margin-bottom: 80px;
+  }
+
+  .tags {
+    font-size: 22px;
+    font-weight: 400;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+
+  .tags span + span::before {
+    content: '\00B7';
+    margin: 0 16px;
+    color: #D5D5CE;
+  }
+
+  .headline-en {
+    font-size: 28px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 8px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 72px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{accent_color}};
+  }
+
+  .brand-name {
+    font-size: 24px;
+    font-weight: 500;
+    color: #7A7A72;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="frame-top"></div>
+  <div class="frame-bottom"></div>
+
+  <div class="content">
+    <h2 class="headline">{{headline}}</h2>
+    <p class="headline-en">{{headline_en}}</p>
+    <p class="subtext">{{subtext}}</p>
+    <span class="cta-button">{{cta_text}}</span>
+    <p class="tags">
+      <span>{{tag1}}</span>
+      <span>{{tag2}}</span>
+      <span>{{tag3}}</span>
+    </p>
+  </div>
+
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+
+</body>
+</html>

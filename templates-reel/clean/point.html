@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reel Point</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #F0F0F0;
+      font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 300px 80px 450px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .number {
+      font-size: 160px;
+      font-weight: 900;
+      color: {{accent_color}};
+      line-height: 1;
+      margin-bottom: 24px;
+      opacity: 0.15;
+      letter-spacing: -0.05em;
+    }
+
+    .headline {
+      font-size: 80px;
+      font-weight: 800;
+      color: #1A1A1A;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      word-break: keep-all;
+      margin-bottom: 36px;
+    }
+
+    .highlight {
+      background: linear-gradient(to top, {{accent_color}}66 45%, transparent 45%);
+      color: #1A1A1A;
+      padding: 0 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .accent-line {
+      width: 56px;
+      height: 4px;
+      background: {{accent_color}};
+      margin-bottom: 36px;
+    }
+
+    .body-text {
+      font-size: 42px;
+      font-weight: 400;
+      color: #6B7280;
+      text-align: center;
+      line-height: 1.7;
+      word-break: keep-all;
+      max-width: 800px;
+    }
+
+    .scene-indicator {
+      position: absolute;
+      top: 280px;
+      right: 80px;
+      font-size: 26px;
+      font-weight: 600;
+      color: #D1D5DB;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <div class="number">{{badge_number}}</div>
+    <h2 class="headline">{{headline}}</h2>
+    <div class="accent-line"></div>
+    <p class="body-text">{{body}}</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reel Highlight</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #F0F0F0;
+      font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 300px 80px 450px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .label {
+      font-size: 32px;
+      font-weight: 700;
+      color: {{accent_color}};
+      letter-spacing: 0.1em;
+      margin-bottom: 40px;
+    }
+
+    .emphasis-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 56px 52px;
+      width: 100%;
+      max-width: 860px;
+      text-align: center;
+      margin-bottom: 40px;
+      border: 3px solid {{accent_color}}33;
+    }
+
+    .emphasis-text {
+      font-size: 72px;
+      font-weight: 900;
+      color: #1A1A1A;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .highlight {
+      background: linear-gradient(to top, {{accent_color}}66 45%, transparent 45%);
+      color: #1A1A1A;
+      padding: 0 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .body-text {
+      font-size: 40px;
+      font-weight: 400;
+      color: #6B7280;
+      text-align: center;
+      line-height: 1.7;
+      word-break: keep-all;
+      max-width: 800px;
+    }
+
+    .scene-indicator {
+      position: absolute;
+      top: 280px;
+      right: 80px;
+      font-size: 26px;
+      font-weight: 600;
+      color: #D1D5DB;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <div class="label">{{headline}}</div>
+    <div class="emphasis-card">
+      <div class="emphasis-text">{{emphasis}}</div>
+    </div>
+    <p class="body-text">{{body}}</p>
+  </div>
+</body>
+</html>

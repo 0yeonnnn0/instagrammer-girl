@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: linear-gradient(160deg, #1a0533 0%, #0d1117 40%, #0a192f 100%);
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .label {
+      font-size: 30px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 40px;
+      background: linear-gradient(135deg, {{accent_color}}, #FF6B6B);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .emphasis-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px; padding: 56px 48px;
+      width: 100%; max-width: 840px; text-align: center; margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+    }
+    .emphasis-text {
+      font-size: 68px; font-weight: 900; color: #FFFFFF;
+      line-height: 1.35; word-break: keep-all;
+    }
+    .body-text {
+      font-size: 38px; font-weight: 400; color: rgba(255,255,255,0.5);
+      text-align: center; line-height: 1.7; word-break: keep-all; max-width: 760px;
+    }
+    .glow {
+      position: absolute; width: 400px; height: 400px; border-radius: 50%;
+      filter: blur(120px); opacity: 0.1; background: {{accent_color}};
+      top: 45%; left: 50%; transform: translate(-50%, -50%);
+    }
+    .scene-indicator {
+      position: absolute; top: 280px; right: 80px;
+      font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <div class="label">{{headline}}</div>
+    <div class="emphasis-card">
+      <div class="emphasis-text">{{emphasis}}</div>
+    </div>
+    <p class="body-text">{{body}}</p>
+  </div>
+</body>
+</html>

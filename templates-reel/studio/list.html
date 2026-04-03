@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+    color: #191919;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .scene-indicator {
+    position: absolute;
+    top: 280px;
+    right: 80px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #B8B8B0;
+    letter-spacing: 0.08em;
+  }
+
+  .content {
+    position: absolute;
+    top: 300px;
+    left: 100px;
+    right: 100px;
+    bottom: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .headline {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: #191919;
+    margin-bottom: 56px;
+    word-break: keep-all;
+  }
+
+  .headline-en {
+    font-size: 30px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 12px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .list {
+    width: 100%;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: baseline;
+    gap: 28px;
+    padding: 36px 0;
+    border-top: 1px solid #E0E0DA;
+  }
+
+  .list-item:last-child {
+    border-bottom: 1px solid #E0E0DA;
+  }
+
+  .item-number {
+    font-size: 30px;
+    font-weight: 700;
+    color: {{accent_color}};
+    flex-shrink: 0;
+    min-width: 36px;
+    letter-spacing: -0.02em;
+  }
+
+  .item-text {
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #191919;
+    word-break: keep-all;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 460px;
+    left: 100px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{accent_color}};
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 500;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+
+  <div class="content">
+    <div class="headline">{{headline}}</div>
+    <p class="headline-en">{{headline_en}}</p>
+    <div class="list">
+      <div class="list-item">
+        <span class="item-number">01</span>
+        <span class="item-text">{{item1}}</span>
+      </div>
+      <div class="list-item">
+        <span class="item-number">02</span>
+        <span class="item-text">{{item2}}</span>
+      </div>
+      <div class="list-item">
+        <span class="item-number">03</span>
+        <span class="item-text">{{item3}}</span>
+      </div>
+      <div class="list-item">
+        <span class="item-number">04</span>
+        <span class="item-text">{{item4}}</span>
+      </div>
+      <div class="list-item">
+        <span class="item-number">05</span>
+        <span class="item-text">{{item5}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <div class="brand-name">{{account_name}}</div>
+  </div>
+</body>
+</html>

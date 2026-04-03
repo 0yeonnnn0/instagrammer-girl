@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: linear-gradient(160deg, #1a0533 0%, #0d1117 40%, #0a192f 100%);
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .headline {
+      font-size: 76px; font-weight: 900; color: #FFFFFF; text-align: center;
+      line-height: 1.3; word-break: keep-all; margin-bottom: 24px;
+      text-shadow: 0 4px 30px rgba(108, 92, 231, 0.3);
+    }
+    .subtext {
+      font-size: 36px; font-weight: 400; color: rgba(255,255,255,0.4); text-align: center;
+      margin-bottom: 52px; word-break: keep-all;
+    }
+    .cta-button {
+      background: linear-gradient(135deg, {{accent_color}}, #FF6B6B);
+      color: #FFFFFF; font-size: 42px; font-weight: 700; padding: 22px 72px;
+      border-radius: 60px; border: none; font-family: inherit; margin-bottom: 40px;
+      box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
+    }
+    .tag-row { display: flex; gap: 14px; }
+    .tag { font-size: 28px; font-weight: 400; color: rgba(255,255,255,0.3); }
+    .glow {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      filter: blur(150px); opacity: 0.12;
+    }
+    .glow-1 { top: 300px; left: -50px; background: {{accent_color}}; }
+    .glow-2 { bottom: 400px; right: -50px; background: #FF6B6B; }
+    .brand {
+      position: absolute; bottom: 440px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .brand-name { font-size: 26px; font-weight: 600; color: rgba(255,255,255,0.3); }
+  </style>
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="content">
+    <h2 class="headline">{{headline}}</h2>
+    <p class="subtext">{{subtext}}</p>
+    <button class="cta-button">{{cta_text}}</button>
+    <div class="tag-row">
+      <span class="tag">{{tag1}}</span>
+      <span class="tag">{{tag2}}</span>
+      <span class="tag">{{tag3}}</span>
+    </div>
+  </div>
+  <div class="brand"><span class="brand-name">{{account_name}}</span></div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #191919;
+    position: relative;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+  .page {
+    width: 100%;
+    height: 100%;
+    padding: 100px 90px 100px 90px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .headline {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-align: left;
+    margin-bottom: 72px;
+    word-break: keep-all;
+    max-width: 780px;
+  }
+  .grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    position: relative;
+  }
+  /* Cross-hair dividers */
+  .grid::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #D4D4CC;
+    transform: translateY(-0.5px);
+  }
+  .grid::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #D4D4CC;
+    transform: translateX(-0.5px);
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 44px;
+  }
+  .cell:nth-child(1) { padding-right: 44px; padding-bottom: 44px; }
+  .cell:nth-child(2) { padding-left: 44px; padding-bottom: 44px; }
+  .cell:nth-child(3) { padding-right: 44px; padding-top: 44px; }
+  .cell:nth-child(4) { padding-left: 44px; padding-top: 44px; }
+  .cell-icon {
+    font-size: 36px;
+    line-height: 1;
+    margin-bottom: 20px;
+    color: {{accent_color}};
+    font-weight: 300;
+  }
+  .cell-title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+    word-break: keep-all;
+  }
+  .cell-desc {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #7A7A72;
+    word-break: keep-all;
+  }
+  .headline-en {
+    font-size: 28px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 8px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+  .brand {
+    position: absolute;
+    bottom: 72px;
+    left: 90px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    background: {{accent_color}};
+  }
+  .brand-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="headline">{{headline}}</h1>
+    <p class="headline-en">{{headline_en}}</p>
+    <div class="grid">
+      <div class="cell">
+        <span class="cell-icon">{{grid1_icon}}</span>
+        <h3 class="cell-title">{{grid1_title}}</h3>
+        <p class="cell-desc">{{grid1_desc}}</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">{{grid2_icon}}</span>
+        <h3 class="cell-title">{{grid2_title}}</h3>
+        <p class="cell-desc">{{grid2_desc}}</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">{{grid3_icon}}</span>
+        <h3 class="cell-title">{{grid3_title}}</h3>
+        <p class="cell-desc">{{grid3_desc}}</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">{{grid4_icon}}</span>
+        <h3 class="cell-title">{{grid4_title}}</h3>
+        <p class="cell-desc">{{grid4_desc}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+</body>
+</html>

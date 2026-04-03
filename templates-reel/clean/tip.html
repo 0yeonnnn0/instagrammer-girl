@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reel Tip</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #F0F0F0;
+      font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 300px 80px 450px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .icon {
+      font-size: 72px;
+      margin-bottom: 36px;
+    }
+
+    .tip-badge {
+      display: inline-block;
+      background: {{accent_color}}1A;
+      color: {{accent_color}};
+      font-size: 30px;
+      font-weight: 700;
+      padding: 10px 28px;
+      border-radius: 50px;
+      margin-bottom: 40px;
+      letter-spacing: 0.05em;
+    }
+
+    .headline {
+      font-size: 76px;
+      font-weight: 800;
+      color: #1A1A1A;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      word-break: keep-all;
+      margin-bottom: 36px;
+    }
+
+    .highlight {
+      background: linear-gradient(to top, {{accent_color}}66 45%, transparent 45%);
+      color: #1A1A1A;
+      padding: 0 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .tip-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 40px 48px;
+      width: 100%;
+      max-width: 860px;
+      border-left: 6px solid {{accent_color}};
+    }
+
+    .tip-text {
+      font-size: 40px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .scene-indicator {
+      position: absolute;
+      top: 280px;
+      right: 80px;
+      font-size: 26px;
+      font-weight: 600;
+      color: #D1D5DB;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <div class="icon">{{badge_text}}</div>
+    <div class="tip-badge">TIP</div>
+    <h2 class="headline">{{headline}}</h2>
+    <div class="tip-card">
+      <p class="tip-text">{{body}}</p>
+    </div>
+  </div>
+</body>
+</html>

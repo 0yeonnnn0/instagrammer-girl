@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: #191F28;
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .headline {
+      font-size: 56px; font-weight: 700; color: #FFFFFF; text-align: center;
+      line-height: 1.35; word-break: keep-all; margin-bottom: 48px;
+    }
+    .compare-grid {
+      display: flex; flex-direction: column; gap: 20px;
+      width: 100%; max-width: 820px;
+    }
+    .compare-card {
+      background: #1E2632; border-radius: 20px; padding: 36px 40px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .compare-card.negative { border-left: 4px solid #F04452; }
+    .compare-card.positive { border-left: 4px solid {{accent_color}}; }
+    .compare-label { font-size: 26px; font-weight: 600; letter-spacing: 0.05em; }
+    .compare-card.negative .compare-label { color: #F04452; }
+    .compare-card.positive .compare-label { color: {{accent_color}}; }
+    .compare-title { font-size: 44px; font-weight: 700; color: #FFFFFF; word-break: keep-all; }
+    .compare-body { font-size: 34px; font-weight: 400; color: #6B7684; line-height: 1.5; word-break: keep-all; }
+    .vs-badge {
+      align-self: center; background: #333D4B; color: #8B95A1;
+      font-size: 24px; font-weight: 700; width: 52px; height: 52px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .scene-indicator {
+      position: absolute; top: 280px; right: 100px;
+      font-size: 24px; font-weight: 500; color: #333D4B;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <h2 class="headline">{{headline}}</h2>
+    <div class="compare-grid">
+      <div class="compare-card negative">
+        <div class="compare-label">BEFORE</div>
+        <div class="compare-title">{{left_title}}</div>
+        <div class="compare-body">{{left_body}}</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="compare-card positive">
+        <div class="compare-label">AFTER</div>
+        <div class="compare-title">{{right_title}}</div>
+        <div class="compare-body">{{right_body}}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

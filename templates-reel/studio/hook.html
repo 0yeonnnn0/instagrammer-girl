@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+    color: #191919;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .content {
+    position: absolute;
+    top: 300px;
+    left: 100px;
+    right: 100px;
+    bottom: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .accent-line-vertical {
+    position: absolute;
+    left: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 100px;
+    background: {{accent_color}};
+  }
+
+  .accent-circle {
+    position: absolute;
+    top: 340px;
+    right: -40px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: {{accent_color}};
+    opacity: 0.04;
+  }
+
+  .badge {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7A7A72;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    display: inline-block;
+    position: relative;
+  }
+
+  .badge::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: {{accent_color}};
+  }
+
+  .headline {
+    font-size: 92px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #191919;
+    margin-top: 40px;
+    word-break: keep-all;
+  }
+
+  .headline-en {
+    font-size: 30px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 12px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .subtext {
+    font-size: 34px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #7A7A72;
+    margin-top: 36px;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 460px;
+    left: 100px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{accent_color}};
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 500;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+  <div class="accent-line-vertical"></div>
+  <div class="accent-circle"></div>
+
+  <div class="content">
+    <div class="badge">{{badge_text}}</div>
+    <div class="headline">{{headline}}</div>
+    <p class="headline-en">{{headline_en}}</p>
+    <div class="subtext">{{subtext}}</div>
+  </div>
+
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <div class="brand-name">{{account_name}}</div>
+  </div>
+</body>
+</html>

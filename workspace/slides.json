@@ -1,0 +1,65 @@
+[
+  {
+    "slide": 1,
+    "type": "cover",
+    "headline": "이 패턴 모르면\n시니어 못 됩니다",
+    "headline_en": "No Pattern Knowledge,\nNo Senior Title",
+    "subtext": "디자인 패턴 TOP 5"
+  },
+  {
+    "slide": 2,
+    "type": "content-highlight",
+    "headline": "싱글톤 패턴",
+    "headline_en": "Singleton Pattern",
+    "emphasis": "사장은\n한 명이다",
+    "emphasis_en": "One Instance Only",
+    "body": "인스턴스를 단 하나만 생성\nRedux Store, DB 커넥션 풀에 활용\n전역 접근이 필요한 곳에 적합",
+    "subtext": "Creational Pattern"
+  },
+  {
+    "slide": 3,
+    "type": "content-badge",
+    "badge_text": "BEHAVIORAL",
+    "headline": "옵저버 패턴",
+    "headline_en": "Observer Pattern",
+    "body": "유튜브 구독 알림처럼\n상태 변경 시 구독자 전원에게 알림\nReact useState, Vue reactive의 근간",
+    "subtext": "프론트엔드에서 가장 중요한 패턴"
+  },
+  {
+    "slide": 4,
+    "type": "content-split",
+    "headline": "팩토리 패턴",
+    "headline_en": "Factory Method Pattern",
+    "left_title": "Before",
+    "left_body": "객체 생성 로직이\n클라이언트 코드에 뒤섞임\n변경 시 전체 수정 필요",
+    "right_title": "After",
+    "right_body": "생성 로직을 캡슐화\n새 타입 추가 시\n기존 코드 수정 Zero",
+    "subtext": "OCP 원칙 — 확장에 열려 있고, 수정에 닫혀 있다"
+  },
+  {
+    "slide": 5,
+    "type": "content-highlight",
+    "headline": "전략 패턴",
+    "headline_en": "Strategy Pattern",
+    "emphasis": "if-else 지옥\n탈출",
+    "emphasis_en": "Escape if-else Hell",
+    "body": "알고리즘을 캡슐화해 런타임에 교체\n결제 수단 / 인증 방식 / 정렬 알고리즘\n네비 경로처럼 조건에 맞게 전환",
+    "subtext": "Behavioral Pattern"
+  },
+  {
+    "slide": 6,
+    "type": "content-badge",
+    "badge_text": "STRUCTURAL",
+    "headline": "데코레이터 패턴",
+    "headline_en": "Decorator Pattern",
+    "body": "커피에 샷 추가하듯\n객체 수정 없이 기능 추가\nPython @decorator\nNestJS @Guard, Spring AOP",
+    "subtext": "상속 대신 구성(Composition)으로"
+  },
+  {
+    "slide": 7,
+    "type": "cta",
+    "headline": "패턴 정리,\n저장해두세요",
+    "headline_en": "Save This for Reference",
+    "cta_text": "팔로우하기"
+  }
+]

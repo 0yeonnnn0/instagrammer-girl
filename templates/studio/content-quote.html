@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    color: #191919;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .quote-container {
+    position: absolute;
+    left: 120px;
+    right: 160px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .quote-inner {
+    position: relative;
+    padding-left: 52px;
+  }
+
+  .quote-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: {{accent_color}};
+  }
+
+  .quote-mark {
+    font-size: 120px;
+    font-weight: 200;
+    line-height: 0.7;
+    color: {{accent_color}};
+    margin-bottom: 24px;
+    display: block;
+    margin-left: -8px;
+  }
+
+  .quote-body {
+    font-size: 44px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: #191919;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    margin-bottom: 56px;
+  }
+
+  .attribution {
+    font-size: 24px;
+    font-weight: 500;
+    color: #7A7A72;
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+
+  .attribution::before {
+    content: '\2014\2002';
+  }
+
+  .headline-en {
+    font-size: 28px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 8px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 72px;
+    left: 120px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{accent_color}};
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-size: 20px;
+    font-weight: 400;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="quote-container">
+    <div class="quote-inner">
+      <div class="quote-bar"></div>
+      <span class="quote-mark">"</span>
+      <p class="quote-body">{{body}}</p>
+      <p class="attribution">{{headline}}</p>
+      <p class="headline-en">{{headline_en}}</p>
+    </div>
+  </div>
+
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+
+</body>
+</html>

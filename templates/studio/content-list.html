@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: #F8F7F4;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    color: #191919;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.3;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .content {
+    position: absolute;
+    left: 120px;
+    right: 160px;
+    top: 200px;
+  }
+
+  .headline {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #191919;
+    word-break: keep-all;
+    margin-bottom: 64px;
+  }
+
+  .list {
+    list-style: none;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 36px 0;
+    border-top: 1px solid #D5D5CE;
+  }
+
+  .list-item:last-child {
+    border-bottom: 1px solid #D5D5CE;
+  }
+
+  .item-number {
+    font-size: 28px;
+    font-weight: 600;
+    color: {{accent_color}};
+    flex-shrink: 0;
+    min-width: 36px;
+    letter-spacing: -0.02em;
+  }
+
+  .item-text {
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #191919;
+    word-break: keep-all;
+  }
+
+  .headline-en {
+    font-size: 28px;
+    font-weight: 300;
+    color: #B8B8B0;
+    letter-spacing: 0.01em;
+    margin-top: 8px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 72px;
+    left: 120px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{accent_color}};
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-size: 20px;
+    font-weight: 400;
+    color: #B8B8B0;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="content">
+    <h2 class="headline">{{headline}}</h2>
+    <p class="headline-en">{{headline_en}}</p>
+    <ul class="list">
+      <li class="list-item">
+        <span class="item-number">01</span>
+        <span class="item-text">{{item1}}</span>
+      </li>
+      <li class="list-item">
+        <span class="item-number">02</span>
+        <span class="item-text">{{item2}}</span>
+      </li>
+      <li class="list-item">
+        <span class="item-number">03</span>
+        <span class="item-text">{{item3}}</span>
+      </li>
+      <li class="list-item">
+        <span class="item-number">04</span>
+        <span class="item-text">{{item4}}</span>
+      </li>
+      <li class="list-item">
+        <span class="item-number">05</span>
+        <span class="item-text">{{item5}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">{{account_name}}</span>
+  </div>
+
+</body>
+</html>

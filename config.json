@@ -1,0 +1,110 @@
+{
+  "version": "3.0",
+  "defaults": {
+    "template": "studio",
+    "accent_color": "#3B82F6",
+    "account_name": "dev.daaram",
+    "slide_count": 7
+  },
+  "templates": {
+    "minimal": {
+      "description": "깔끔하고 전문적인 스타일",
+      "accent_color": "#2D63E2",
+      "background": "light"
+    },
+    "bold": {
+      "description": "강렬하고 임팩트 있는 스타일",
+      "accent_color": "#6C5CE7",
+      "background": "gradient"
+    },
+    "elegant": {
+      "description": "고급스럽고 세련된 스타일",
+      "accent_color": "#D4AF37",
+      "background": "dark"
+    },
+    "premium": {
+      "description": "다크 프리미엄 바이브런트 스타일",
+      "accent_color": "#A855F7",
+      "background": "dark-gradient"
+    },
+    "toss": {
+      "description": "토스 스타일 울트라 미니멀",
+      "accent_color": "#3182F6",
+      "background": "dark-flat"
+    },
+    "magazine": {
+      "description": "매거진 스타일 포토 + 화이트 클린",
+      "accent_color": "#3B82F6",
+      "background": "photo-white"
+    },
+    "clean": {
+      "description": "클린 에디토리얼 스타일 라이트그레이 + 그린 하이라이트",
+      "accent_color": "#8BC34A",
+      "background": "light-gray"
+    },
+    "blueprint": {
+      "description": "블루프린트 프레젠테이션 스타일 라이트블루그레이 + 소프트블루",
+      "accent_color": "#7BA7CC",
+      "background": "light-blue-gray"
+    }
+  },
+  "reel_templates": {
+    "clean": {
+      "description": "클린 에디토리얼 릴스, 라이트그레이 배경",
+      "accent_color": "#8BC34A",
+      "background": "light-gray"
+    },
+    "toss": {
+      "description": "토스 스타일 다크 미니멀 릴스",
+      "accent_color": "#3182F6",
+      "background": "dark-flat"
+    },
+    "bold": {
+      "description": "강렬한 그라디언트 다크 릴스",
+      "accent_color": "#6C5CE7",
+      "background": "gradient-dark"
+    }
+  },
+  "dimensions": {
+    "width": 1080,
+    "height": 1350
+  },
+  "reel_dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "output_dir": "output",
+  "workspace_dir": "workspace",
+  "reel_defaults": {
+    "template": "studio",
+    "scene_count": 7,
+    "scene_duration": 2.5
+  },
+  "automation": {
+    "schedule_hour": 7,
+    "schedule_minute": 0,
+    "template": "studio",
+    "tone": "professional",
+    "slide_count": 7,
+    "max_budget_per_run": 5.00,
+    "timeout_minutes": 15,
+    "retry_on_failure": true,
+    "upload_after_generate": true,
+    "rss_feeds": {
+      "hackernews": true,
+      "devto": true
+    },
+    "backup_topics": [
+      "Docker 핵심 명령어 정리",
+      "SQL 최적화 실전 팁",
+      "React 성능 최적화 가이드",
+      "TypeScript 필수 타입 패턴",
+      "개발자가 알아야 할 네트워크 기초",
+      "REST API vs GraphQL 비교",
+      "CI/CD 파이프라인 구축 가이드",
+      "디자인 패턴 TOP 5",
+      "웹 보안 체크리스트",
+      "개발자 면접 필수 CS 지식"
+    ]
+  }
+}

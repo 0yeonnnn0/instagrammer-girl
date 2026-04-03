@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: #191F28;
+      font-family: 'Apple SD Gothic Neo', -apple-system, sans-serif;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .content {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 300px 80px 450px; width: 100%; height: 100%; justify-content: center;
+    }
+    .label {
+      font-size: 28px; font-weight: 600; color: {{accent_color}};
+      letter-spacing: 0.08em; margin-bottom: 40px;
+    }
+    .emphasis-card {
+      background: #1E2632; border-radius: 24px; padding: 52px 48px;
+      width: 100%; max-width: 820px; text-align: center; margin-bottom: 40px;
+      border: 2px solid {{accent_color}}22;
+    }
+    .emphasis-text {
+      font-size: 64px; font-weight: 800; color: #FFFFFF;
+      line-height: 1.35; word-break: keep-all;
+    }
+    .body-text {
+      font-size: 36px; font-weight: 400; color: #8B95A1;
+      text-align: center; line-height: 1.7; word-break: keep-all; max-width: 760px;
+    }
+    .scene-indicator {
+      position: absolute; top: 280px; right: 100px;
+      font-size: 24px; font-weight: 500; color: #333D4B;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene-indicator">{{slide_number}} / {{total_slides}}</div>
+  <div class="content">
+    <div class="label">{{headline}}</div>
+    <div class="emphasis-card">
+      <div class="emphasis-text">{{emphasis}}</div>
+    </div>
+    <p class="body-text">{{body}}</p>
+  </div>
+</body>
+</html>
