@@ -1,0 +1,31 @@
+services:
+  dashboard:
+    build: .
+    container_name: ig-dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./templates:/app/templates
+      - ./templates-reel:/app/templates-reel
+      - ./assets:/app/assets
+      # Mount Claude CLI config from host (read-only)
+      - ${HOME}/.claude:/root/.claude:ro
+    environment:
+      - NODE_ENV=production
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-this-encryption-key-32chars!!}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - SESSION_SECRET=${SESSION_SECRET:-change-this-session-secret-32chars!!}
+      # Shared Cloudinary (accounts can override)
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
