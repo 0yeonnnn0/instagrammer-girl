@@ -1,0 +1,45 @@
+<%- include('../partials/head', { title: '계정 관리' }) %>
+<%- include('../partials/nav') %>
+
+<main class="container-wide fade-in">
+  <div class="flex-between mb-lg">
+    <h1>계정 관리</h1>
+    <a href="/accounts/new" class="btn btn-primary btn-sm">+ 계정 추가</a>
+  </div>
+
+  <% if (accounts.length === 0) { %>
+    <div class="card" style="text-align: center; padding: 48px;">
+      <p class="text-secondary" style="margin-bottom: 16px;">등록된 계정이 없습니다</p>
+      <a href="/accounts/new" class="btn btn-primary">첫 계정 추가하기</a>
+    </div>
+  <% } else { %>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>상태</th>
+            <th>이름</th>
+            <th>템플릿</th>
+            <th>콘텐츠</th>
+            <th>스케줄</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% accounts.forEach(a => { %>
+            <tr>
+              <td><span class="dot <%= a.is_active ? 'dot-active' : 'dot-paused' %>"></span></td>
+              <td><a href="/accounts/<%= a.id %>" style="font-weight: 600; color: var(--text-primary);"><%= a.name %></a></td>
+              <td class="text-secondary"><%= a.template %></td>
+              <td><span class="badge badge-blue"><%= a.content_type === 'both' ? '카드+릴스' : a.content_type %></span></td>
+              <td class="text-sm text-tertiary"><%= a.schedule_cron %></td>
+              <td><a href="/accounts/<%= a.id %>/edit" class="btn btn-ghost btn-sm">설정</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+
+<%- include('../partials/foot') %>
