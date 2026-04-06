@@ -1,0 +1,579 @@
+<%- include('../partials/head', { title: account && account.id ? '계정 설정' : '계정 추가' }) %>
+<%- include('../partials/nav') %>
+
+<main class="container-wide fade-in">
+  <h1 class="mb-lg"><%= account && account.id ? '계정 설정' : '계정 추가' %></h1>
+
+  <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <form method="POST" action="<%= account && account.id ? '/accounts/' + account.id : '/accounts' %>" x-data="{ tab: 'content', contentView: 'card' }">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button type="button" class="tab-btn" :class="{ active: tab === 'content' }" @click="tab = 'content'">콘텐츠 설정</button>
+      <button type="button" class="tab-btn" :class="{ active: tab === 'topics' }" @click="tab = 'topics'">백업 주제</button>
+      <button type="button" class="tab-btn" :class="{ active: tab === 'automation' }" @click="tab = 'automation'">자동화</button>
+      <button type="button" class="tab-btn" :class="{ active: tab === 'templates' }" @click="tab = 'templates'">템플릿 관리</button>
+      <button type="button" class="tab-btn danger" :class="{ active: tab === 'api' }" @click="tab = 'api'">🔒 API & 인증</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- Tab: 콘텐츠 설정                              -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div x-show="tab === 'content'" x-transition.opacity x-data="{
+      testType: 'card',
+      testTopic: 'Docker 핵심 명령어 정리',
+      preview: '',
+      testResult: '',
+      testing: false,
+      updatePreview() {
+        const g = (n) => { const e = document.querySelector('[name=' + n + ']'); return e ? e.value : ''; };
+        const base = this.testType === 'reel'
+          ? `&quot;${this.testTopic}&quot; 주제로 릴스 만들어줘. 톤: ${g('tone')}, 릴스 템플릿: ${g('reel_template')}, 악센트: ${g('accent_color')}, 계정: ${g('name')}, 업로드까지 해줘.`
+          : `&quot;${this.testTopic}&quot; 주제로 카드뉴스 만들어줘. 톤: ${g('tone')}, 템플릿: ${g('template')}, 악센트: ${g('accent_color')}, 계정: ${g('name')}, 업로드까지 해줘.`;
+        const customEl = this.testType === 'card' ? document.querySelector('[name=card_prompt]') : document.querySelector('[name=reel_prompt]');
+        const custom = customEl ? customEl.value.trim() : '';
+        this.preview = custom ? base + '\n\n' + custom : base;
+      },
+      async runTest() {
+        this.updatePreview();
+        this.testing = true; this.testResult = '테스트 실행 중... (30초~2분 소요)';
+        try {
+          const r = await fetch('/api/prompt-test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt:this.preview}) });
+          const d = await r.json();
+          this.testResult = d.result || d.error || 'No response';
+        } catch(e) { this.testResult = 'Error: '+e.message; }
+        this.testing = false;
+      }
+    }">
+
+      <!-- 기본 설정 -->
+      <fieldset>
+        <legend>기본 설정</legend>
+        <% if (!account || !account.id) { %>
+          <label>계정 이름 * <input type="text" name="name" value="" required placeholder="dev.daaram"></label>
+        <% } %>
+        <div class="grid-2">
+          <label>톤
+            <select name="tone">
+              <% ['professional','casual','energetic'].forEach(t => { %>
+                <option value="<%= t %>" <%= account && account.tone === t ? 'selected' : '' %>><%= t %></option>
+              <% }) %>
+            </select>
+          </label>
+          <label>콘텐츠 타입
+            <select name="content_type">
+              <option value="both" <%= account && account.content_type === 'both' ? 'selected' : '' %>>카드+릴스</option>
+              <option value="card" <%= account && account.content_type === 'card' ? 'selected' : '' %>>카드만</option>
+              <option value="reel" <%= account && account.content_type === 'reel' ? 'selected' : '' %>>릴스만</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- 카드 / 릴스 토글 -->
+      <div class="toggle-group" style="margin-bottom: 24px;">
+        <button type="button" @click="contentView = 'card'" class="toggle-item" :class="{ active: contentView === 'card' }">카드뉴스</button>
+        <button type="button" @click="contentView = 'reel'" class="toggle-item" :class="{ active: contentView === 'reel' }">릴스</button>
+      </div>
+
+      <!-- ── 카드뉴스 설정 ── -->
+      <div x-show="contentView === 'card'" x-transition.opacity x-data="{
+        cTmpl: '<%= account ? account.template || 'studio' : 'studio' %>',
+        cSlides: [], cIdx: 0, cLoading: false,
+        async cLoad() { this.cLoading = true; this.cIdx = 0; const r = await fetch('/api/templates/card/' + this.cTmpl + '/previews'); this.cSlides = (await r.json()).slides || []; this.cLoading = false; },
+        cPrev() { this.cIdx = (this.cIdx - 1 + this.cSlides.length) % this.cSlides.length; },
+        cNext() { this.cIdx = (this.cIdx + 1) % this.cSlides.length; }
+      }" x-init="cLoad()">
+        <div style="display: grid; grid-template-columns: 340px 1fr; gap: 28px; align-items: start;">
+
+          <!-- 왼: 미리보기 -->
+          <div>
+            <div class="flex-between" style="margin-bottom: 10px;">
+              <select x-model="cTmpl" @change="cLoad()" style="width: auto; margin: 0; padding: 6px 32px 6px 10px; font-weight: 600; font-size: 0.85rem; background: var(--bg-elevated); border-color: var(--border);">
+                <% ['studio','minimal','bold','elegant','premium','toss','magazine','clean','blueprint'].forEach(t => { %>
+                  <option value="<%= t %>"><%= t %></option>
+                <% }) %>
+              </select>
+              <span class="text-xs text-tertiary" x-text="cSlides.length ? (cIdx + 1) + ' / ' + cSlides.length : ''"></span>
+            </div>
+            <div style="position: relative;" x-show="!cLoading">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card);">
+                <img :src="cSlides[cIdx]?.src" :alt="cSlides[cIdx]?.type" style="width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover;" :key="cIdx">
+              </div>
+              <button type="button" @click="cPrev()" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">‹</button>
+              <button type="button" @click="cNext()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">›</button>
+              <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.65);padding:4px 14px;border-radius:20px;backdrop-filter:blur(4px);">
+                <span class="text-xs" style="color:#fff;font-weight:600;" x-text="cSlides[cIdx]?.type"></span>
+              </div>
+            </div>
+            <div x-show="cLoading" style="aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);">
+              <span class="text-sm text-tertiary">로딩 중...</span>
+            </div>
+            <div x-show="cSlides.length > 0" style="display:flex;justify-content:center;gap:5px;margin-top:12px;">
+              <template x-for="(s, i) in cSlides" :key="i">
+                <button type="button" @click="cIdx = i" style="width:7px;height:7px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all 180ms;"
+                  :style="i === cIdx ? 'background:var(--blue);transform:scale(1.4);' : 'background:var(--text-tertiary);opacity:0.35;'"></button>
+              </template>
+            </div>
+            <input type="hidden" name="template" :value="cTmpl">
+          </div>
+
+          <!-- 오른: 설정 -->
+          <div>
+            <fieldset>
+              <legend>스타일 옵션</legend>
+              <div class="grid-2">
+                <label>슬라이드 수 <input type="number" name="slide_count" value="<%= account ? account.slide_count || 7 : 7 %>" min="5" max="12"></label>
+                <label>악센트 컬러
+                  <div class="flex" style="gap:8px;">
+                    <input type="color" name="accent_color" value="<%= account ? account.accent_color || '#C94040' : '#C94040' %>" style="width:48px;height:38px;padding:2px;">
+                    <span class="text-xs text-tertiary" style="margin-top:10px;"><%= account ? account.accent_color || '#C94040' : '#C94040' %></span>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>카드뉴스 프롬프트</legend>
+
+              <!-- 1. 기본 프롬프트 (고정) -->
+              <div class="text-xs text-tertiary" style="margin-bottom:4px;">기본 프롬프트 (자동 적용)</div>
+              <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-bottom:16px;opacity:0.5;">
+                <span class="text-xs" style="font-family:'SF Mono',monospace;color:var(--text-tertiary);line-height:1.5;">"{{topic}}" 주제로 카드뉴스 만들어줘. 톤·템플릿·악센트·계정 자동 포함</span>
+              </div>
+
+              <!-- 2. 전략 -->
+              <label>콘텐츠 전략
+                <select name="card_strategy" style="margin-bottom:8px;">
+                  <option value="tutorial" <%= account && account.card_strategy === 'tutorial' ? 'selected' : (!account || !account.card_strategy) ? 'selected' : '' %>>튜토리얼·팁·가이드 (기본)</option>
+                  <option value="listicle" <%= account && account.card_strategy === 'listicle' ? 'selected' : '' %>>리스티클 (TOP N, 모음)</option>
+                  <option value="comparison" <%= account && account.card_strategy === 'comparison' ? 'selected' : '' %>>비교·분석 (A vs B)</option>
+                  <option value="news" <%= account && account.card_strategy === 'news' ? 'selected' : '' %>>뉴스·트렌드 정리</option>
+                  <option value="custom" <%= account && account.card_strategy === 'custom' ? 'selected' : '' %>>커스텀</option>
+                </select>
+              </label>
+              <label>전략 상세 프롬프트
+                <textarea name="card_strategy_prompt" rows="3" placeholder="기본: 개발자를 위한 실용적인 튜토리얼/팁/가이드 형태로 만들어줘. 저장·공유를 유도하는 교육 콘텐츠로 구성해."><%= account && account.card_strategy_prompt ? account.card_strategy_prompt : '' %></textarea>
+                <small>비워두면 선택한 전략의 기본 프롬프트가 사용됩니다.</small>
+              </label>
+
+              <!-- 3. 추가 지시사항 -->
+              <label>추가 지시사항
+                <textarea name="card_prompt" rows="2" @input="if(testType==='card') updatePreview()" placeholder="예: CLAUDE.md 파이프라인을 따라 진행해줘."><%= account && account.card_prompt ? account.card_prompt : '' %></textarea>
+              </label>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 릴스 설정 ── -->
+      <div x-show="contentView === 'reel'" x-transition.opacity x-data="{
+        rTmpl: '<%= account ? account.reel_template || 'clean' : 'clean' %>',
+        rScenes: [], rIdx: 0, rLoading: false,
+        async rLoad() { this.rLoading = true; this.rIdx = 0; const r = await fetch('/api/templates/reel/' + this.rTmpl + '/previews'); this.rScenes = (await r.json()).slides || []; this.rLoading = false; },
+        rPrev() { this.rIdx = (this.rIdx - 1 + this.rScenes.length) % this.rScenes.length; },
+        rNext() { this.rIdx = (this.rIdx + 1) % this.rScenes.length; }
+      }" x-init="rLoad()">
+        <div style="display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: start;">
+
+          <!-- 왼: 미리보기 -->
+          <div>
+            <div class="flex-between" style="margin-bottom: 10px;">
+              <select x-model="rTmpl" @change="rLoad()" style="width: auto; margin: 0; padding: 6px 32px 6px 10px; font-weight: 600; font-size: 0.85rem; background: var(--bg-elevated); border-color: var(--border);">
+                <% ['clean','toss','bold','studio'].forEach(t => { %>
+                  <option value="<%= t %>"><%= t %></option>
+                <% }) %>
+              </select>
+              <span class="text-xs text-tertiary" x-text="rScenes.length ? (rIdx + 1) + ' / ' + rScenes.length : ''"></span>
+            </div>
+            <div style="position: relative;" x-show="!rLoading">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card);">
+                <img :src="rScenes[rIdx]?.src" :alt="rScenes[rIdx]?.type" style="width: 100%; display: block; aspect-ratio: 9/16; object-fit: cover;">
+              </div>
+              <button type="button" @click="rPrev()" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
+              <button type="button" @click="rNext()" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
+              <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.65);padding:3px 12px;border-radius:20px;">
+                <span class="text-xs" style="color:#fff;font-weight:600;" x-text="rScenes[rIdx]?.type"></span>
+              </div>
+            </div>
+            <div x-show="rLoading" style="aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);">
+              <span class="text-sm text-tertiary">로딩 중...</span>
+            </div>
+            <div x-show="rScenes.length > 0" style="display:flex;justify-content:center;gap:5px;margin-top:10px;">
+              <template x-for="(s, i) in rScenes" :key="i">
+                <button type="button" @click="rIdx = i" style="width:6px;height:6px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all 180ms;"
+                  :style="i === rIdx ? 'background:var(--blue);transform:scale(1.4);' : 'background:var(--text-tertiary);opacity:0.35;'"></button>
+              </template>
+            </div>
+            <input type="hidden" name="reel_template" :value="rTmpl">
+          </div>
+
+          <!-- 오른: 설정 -->
+          <div>
+            <fieldset>
+              <legend>스타일 옵션</legend>
+              <label>씬 수 <input type="number" name="scene_count" value="<%= account ? account.scene_count || 7 : 7 %>" min="5" max="10"></label>
+            </fieldset>
+            <fieldset>
+              <legend>릴스 프롬프트</legend>
+
+              <!-- 1. 기본 프롬프트 (고정) -->
+              <div class="text-xs text-tertiary" style="margin-bottom:4px;">기본 프롬프트 (자동 적용)</div>
+              <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-bottom:16px;opacity:0.5;">
+                <span class="text-xs" style="font-family:'SF Mono',monospace;color:var(--text-tertiary);line-height:1.5;">"{{topic}}" 주제로 릴스 만들어줘. 톤·템플릿·악센트·계정 자동 포함</span>
+              </div>
+
+              <!-- 2. 전략 -->
+              <label>콘텐츠 전략
+                <select name="reel_strategy" style="margin-bottom:8px;">
+                  <option value="news" <%= account && account.reel_strategy === 'news' ? 'selected' : (!account || !account.reel_strategy) ? 'selected' : '' %>>뉴스·속보·트렌드 (기본)</option>
+                  <option value="tips" <%= account && account.reel_strategy === 'tips' ? 'selected' : '' %>>빠른 팁·꿀팁</option>
+                  <option value="controversy" <%= account && account.reel_strategy === 'controversy' ? 'selected' : '' %>>논란·스캔들·충격</option>
+                  <option value="comparison" <%= account && account.reel_strategy === 'comparison' ? 'selected' : '' %>>비교·랭킹</option>
+                  <option value="custom" <%= account && account.reel_strategy === 'custom' ? 'selected' : '' %>>커스텀</option>
+                </select>
+              </label>
+              <label>전략 상세 프롬프트
+                <textarea name="reel_strategy_prompt" rows="3" placeholder="기본: 오늘의 최신 뉴스/속보/트렌드를 다뤄줘. 스크롤을 멈추게 하는 충격적 훅으로 시작하고, 신규 팔로워 유입을 극대화해."><%= account && account.reel_strategy_prompt ? account.reel_strategy_prompt : '' %></textarea>
+                <small>비워두면 선택한 전략의 기본 프롬프트가 사용됩니다.</small>
+              </label>
+
+              <!-- 3. 추가 지시사항 -->
+              <label>추가 지시사항
+                <textarea name="reel_prompt" rows="2" @input="if(testType==='reel') updatePreview()" placeholder="예: 씬 수는 8개로 해줘."><%= account && account.reel_prompt ? account.reel_prompt : '' %></textarea>
+              </label>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+      <!-- 프롬프트 테스트 -->
+      <div class="card" style="margin-top: 24px; padding: 24px;">
+        <h3 style="margin-bottom: 16px;">프롬프트 테스트</h3>
+        <div class="grid-2">
+          <label>테스트 타입
+            <select x-model="testType" @change="updatePreview()"><option value="card">카드뉴스</option><option value="reel">릴스</option></select>
+          </label>
+          <label>테스트 주제
+            <input type="text" x-model="testTopic" @input="updatePreview()" placeholder="테스트할 주제를 입력하세요">
+          </label>
+        </div>
+        <button type="button" @click="updatePreview()" class="btn btn-secondary btn-sm mb-md">미리보기 업데이트</button>
+        <div class="text-xs text-tertiary" style="margin-bottom:6px;">변수 치환 결과</div>
+        <div class="code-block" style="margin-bottom:20px;"><pre x-text="preview || '위의 미리보기 업데이트 버튼을 클릭하세요'"></pre></div>
+        <% if (account && account.id) { %>
+          <div class="flex" style="gap:12px;">
+            <button type="button" @click="runTest()" :disabled="testing" class="btn btn-primary btn-sm">
+              <span x-show="!testing">Claude에 테스트 전송</span><span x-show="testing">실행 중...</span>
+            </button>
+            <span class="text-xs text-tertiary" style="margin-top:2px;">카피라이팅 결과만 확인 (업로드 없음)</span>
+          </div>
+          <div x-show="testResult" style="margin-top:16px;">
+            <div class="text-xs text-tertiary" style="margin-bottom:6px;">테스트 결과</div>
+            <div class="code-block"><pre x-text="testResult"></pre></div>
+          </div>
+        <% } else { %>
+          <p class="text-sm text-tertiary">계정을 먼저 저장한 후 테스트할 수 있습니다.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (account && account.id) { %>
+      <input type="hidden" name="name" value="<%= account.name %>">
+    <% } %>
+
+    <!-- ═══ Tab: 백업 주제 ═══ -->
+    <div x-show="tab === 'topics'" x-transition.opacity>
+      <fieldset>
+        <legend>백업 주제 목록</legend>
+        <p class="text-sm text-tertiary" style="margin-bottom:12px;">RSS에서 릴스 주제를 못 찾을 때, 카드뉴스용 예비 주제로 사용됩니다. 한 줄에 하나씩, 위에서부터 순서대로 소비됩니다.</p>
+        <textarea name="backup_topics" rows="12" placeholder="Docker 핵심 명령어 정리&#10;Git 고급 활용법&#10;API 설계 베스트 프랙티스"><%= account && account.backup_topics ? account.backup_topics : '' %></textarea>
+      </fieldset>
+    </div>
+
+    <!-- ═══ Tab: 자동화 ═══ -->
+    <div x-show="tab === 'automation'" x-transition.opacity x-data="{
+      tz: 'KST',
+      hour: '<%= account ? (typeof account.schedule_hour !== 'undefined' ? account.schedule_hour : 7) : 7 %>',
+      minute: '<%= account ? (typeof account.schedule_minute !== 'undefined' ? account.schedule_minute : 0) : 0 %>',
+      get cronExpr() {
+        let h = parseInt(this.hour);
+        let m = parseInt(this.minute) || 0;
+        if (this.tz === 'KST') h = (h - 9 + 24) % 24;
+        return m + ' ' + h + ' * * *';
+      },
+      get displayTime() {
+        const pad = (n) => String(n).padStart(2, '0');
+        return pad(this.hour) + ':' + pad(this.minute);
+      }
+    }">
+      <fieldset>
+        <legend>스케줄</legend>
+        <div class="grid-2">
+          <label>시간대
+            <select x-model="tz">
+              <option value="KST">한국 시간 (KST, UTC+9)</option>
+              <option value="UTC">UTC</option>
+            </select>
+          </label>
+          <label>발행 시간
+            <div class="flex" style="gap:8px;">
+              <select x-model="hour" style="width:auto;">
+                <% for (let i = 0; i < 24; i++) { %>
+                  <option value="<%= i %>"><%= String(i).padStart(2, '0') %>시</option>
+                <% } %>
+              </select>
+              <select x-model="minute" style="width:auto;">
+                <option value="0">00분</option>
+                <option value="15">15분</option>
+                <option value="30">30분</option>
+                <option value="45">45분</option>
+              </select>
+            </div>
+            <small>매일 <span x-text="displayTime"></span> (<span x-text="tz"></span>) 에 자동 생성됩니다</small>
+          </label>
+        </div>
+        <input type="hidden" name="schedule_cron" :value="cronExpr">
+      </fieldset>
+      <fieldset>
+        <legend>리소스 제한</legend>
+        <div class="grid-2">
+          <label>예산 (USD/회) <input type="number" name="max_budget_usd" value="<%= account ? account.max_budget_usd || 5 : 5 %>" step="0.5" min="1"><small>Claude API 사용량 상한</small></label>
+          <label>타임아웃 (분) <input type="number" name="timeout_minutes" value="<%= account ? account.timeout_minutes || 15 : 15 %>" min="5" max="60"><small>생성 작업 최대 실행 시간</small></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>RSS 피드 (릴스 주제 소스)</legend>
+        <div class="grid-2">
+          <label style="display:flex;align-items:center;cursor:pointer;"><input type="checkbox" name="rss_hackernews" value="1" <%= !account || account.rss_hackernews ? 'checked' : '' %>> Hacker News 상위 30</label>
+          <label style="display:flex;align-items:center;cursor:pointer;"><input type="checkbox" name="rss_devto" value="1" <%= !account || account.rss_devto ? 'checked' : '' %>> dev.to 피드</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- ═══ Tab: 템플릿 관리 ═══ -->
+    <div x-show="tab === 'templates'" x-transition.opacity x-data="{
+      cards: [], reels: [],
+      tmplType: 'card', tmplName: '', slides: [], sIdx: 0,
+      editTab: 'code', editHtml: '', editLoading: false, editSaving: false, editMsg: '',
+      aiPrompt: '', aiRunning: false, aiResult: '',
+      newName: '', newCopyFrom: '', creating: false, msg: '',
+      loading: true, refreshing: false,
+      get currentSlides() { return this.tmplType === 'card' ? this.cards : this.reels; },
+      async load() {
+        this.loading = true;
+        const r = await fetch('/api/templates'); const d = await r.json();
+        this.cards = d.cards; this.reels = d.reels;
+        if (!this.tmplName && this.cards.length) this.tmplName = this.cards[0].name;
+        this.loading = false;
+        this.loadSlides();
+      },
+      async loadSlides() {
+        if (!this.tmplName) return;
+        this.sIdx = 0;
+        const r = await fetch('/api/templates/' + this.tmplType + '/' + this.tmplName + '/previews');
+        this.slides = (await r.json()).slides || [];
+        this.loadCode();
+      },
+      async loadCode() {
+        if (!this.slides.length) return;
+        this.editLoading = true; this.editMsg = '';
+        const st = this.slides[this.sIdx]?.type;
+        const r = await fetch('/api/templates/' + this.tmplType + '/' + this.tmplName + '/' + st);
+        const d = await r.json();
+        this.editHtml = d.html || '';
+        this.editLoading = false;
+      },
+      async saveCode() {
+        this.editSaving = true; this.editMsg = '';
+        const st = this.slides[this.sIdx]?.type;
+        const r = await fetch('/api/templates/' + this.tmplType + '/' + this.tmplName + '/' + st, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ html: this.editHtml })
+        });
+        const d = await r.json();
+        this.editMsg = d.error ? d.error : '저장 완료! 새로고침으로 미리보기를 업데이트하세요.';
+        this.editSaving = false;
+      },
+      async refreshPreview() {
+        this.refreshing = true;
+        await this.saveCode();
+        // Force reload preview image
+        const st = this.slides[this.sIdx]?.type;
+        this.slides[this.sIdx].src = '/public/previews/' + this.tmplType + '-' + this.tmplName + '/' + st + '.png?t=' + Date.now();
+        this.refreshing = false;
+        this.editMsg = '미리보기 업데이트 완료!';
+      },
+      async runAi() {
+        if (!this.aiPrompt.trim()) return;
+        this.aiRunning = true; this.aiResult = '';
+        const st = this.slides[this.sIdx]?.type;
+        const prompt = '아래 HTML 템플릿을 수정해줘. 수정된 HTML 전체를 출력해줘. 다른 설명 없이 HTML만.\\n\\n요청: ' + this.aiPrompt + '\\n\\n현재 HTML:\\n' + this.editHtml;
+        try {
+          const r = await fetch('/api/prompt-test', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ prompt })
+          });
+          const d = await r.json();
+          this.aiResult = d.result || d.error || '';
+        } catch(e) { this.aiResult = 'Error: ' + e.message; }
+        this.aiRunning = false;
+      },
+      applyAi() { this.editHtml = this.aiResult; this.editTab = 'code'; this.aiResult = ''; this.editMsg = 'AI 결과를 적용했습니다. 저장 후 새로고침하세요.'; },
+      prevSlide() { this.sIdx = (this.sIdx - 1 + this.slides.length) % this.slides.length; this.loadCode(); },
+      nextSlide() { this.sIdx = (this.sIdx + 1) % this.slides.length; this.loadCode(); },
+      goSlide(i) { this.sIdx = i; this.loadCode(); },
+      switchType(type) { this.tmplType = type; this.tmplName = (type === 'card' ? this.cards[0]?.name : this.reels[0]?.name) || ''; this.loadSlides(); },
+      async remove(type, name) { if(!confirm(name+' 삭제?'))return; await fetch('/api/templates/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,name})}); this.load(); },
+      async create() { if(!this.newName){this.msg='이름 입력';return;} this.creating=true; const r=await fetch('/api/templates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:this.tmplType,name:this.newName,copyFrom:this.newCopyFrom})}); const d=await r.json(); this.msg=d.error||this.newName+' 생성 완료'; this.newName='';this.creating=false;this.load(); }
+    }" x-init="load()">
+
+      <!-- 상단: 타입 토글 + 템플릿 선택 + 생성/삭제 -->
+      <div class="flex-between mb-md" style="flex-wrap: wrap; gap: 12px;">
+        <div class="flex" style="gap: 12px;">
+          <!-- 카드/릴스 토글 -->
+          <div class="toggle-group">
+            <button type="button" @click="switchType('card')" class="toggle-item toggle-item-sm" :class="{ active: tmplType === 'card' }">카드뉴스</button>
+            <button type="button" @click="switchType('reel')" class="toggle-item toggle-item-sm" :class="{ active: tmplType === 'reel' }">릴스</button>
+          </div>
+          <!-- 템플릿 셀렉터 -->
+          <select x-model="tmplName" @change="loadSlides()" style="width:auto;margin:0;padding:6px 32px 6px 10px;font-weight:600;font-size:0.85rem;background:var(--bg-elevated);border-color:var(--border);">
+            <template x-for="t in currentSlides" :key="t.name">
+              <option :value="t.name" x-text="t.name"></option>
+            </template>
+          </select>
+        </div>
+        <div class="flex" style="gap: 8px;">
+          <button type="button" @click="remove(tmplType, tmplName)" class="btn btn-ghost btn-sm" style="color:var(--red);">삭제</button>
+        </div>
+      </div>
+
+      <!-- 메인: 좌우 분할 -->
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start;">
+
+        <!-- 왼쪽: 미리보기 캐러셀 (콘텐츠 설정과 동일 크기) -->
+        <div>
+          <div class="flex-between" style="margin-bottom:10px;">
+            <span class="text-xs text-tertiary" x-text="slides[sIdx]?.type" style="font-weight:600;"></span>
+            <span class="text-xs text-tertiary" x-text="slides.length ? (sIdx+1)+' / '+slides.length : ''"></span>
+          </div>
+          <div style="position:relative;" x-show="slides.length > 0">
+            <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg-card);">
+              <img :src="slides[sIdx]?.src" :alt="slides[sIdx]?.type" style="width:100%;display:block;object-fit:cover;aspect-ratio:4/5;" :key="sIdx + slides[sIdx]?.src">
+            </div>
+            <button type="button" @click="prevSlide()" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">‹</button>
+            <button type="button" @click="nextSlide()" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">›</button>
+          </div>
+          <div x-show="slides.length > 0" style="display:flex;justify-content:center;gap:5px;margin-top:10px;">
+            <template x-for="(s,i) in slides" :key="i">
+              <button type="button" @click="goSlide(i)" style="width:6px;height:6px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all 180ms;"
+                :style="i===sIdx?'background:var(--blue);transform:scale(1.3);':'background:var(--text-tertiary);opacity:0.35;'"></button>
+            </template>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 코드 / AI 탭 -->
+        <div>
+          <!-- 서브 탭 -->
+          <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;">
+            <button type="button" @click="editTab='code'" style="background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 180ms;border-radius:0;margin:0;"
+              :style="editTab==='code'?'color:var(--blue);border-bottom-color:var(--blue);':'color:var(--text-tertiary);'">코드</button>
+            <button type="button" @click="editTab='ai'" style="background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 180ms;border-radius:0;margin:0;"
+              :style="editTab==='ai'?'color:var(--blue);border-bottom-color:var(--blue);':'color:var(--text-tertiary);'">AI에게 맡기기</button>
+          </div>
+
+          <!-- 코드 탭 -->
+          <div x-show="editTab==='code'">
+            <div x-show="editLoading" class="text-sm text-tertiary" style="padding:20px;">로딩 중...</div>
+            <div x-show="!editLoading">
+              <textarea x-model="editHtml" rows="20" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.78rem;line-height:1.5;background:#0A0C10;color:#D4D4D8;border-color:var(--border);resize:vertical;width:100%;"></textarea>
+              <div class="flex mt-sm" style="gap:8px;">
+                <button type="button" @click="saveCode()" :disabled="editSaving" class="btn btn-secondary btn-sm">
+                  <span x-show="!editSaving">저장</span><span x-show="editSaving">...</span>
+                </button>
+                <button type="button" @click="refreshPreview()" :disabled="refreshing" class="btn btn-primary btn-sm">
+                  <span x-show="!refreshing">저장 & 미리보기 새로고침</span><span x-show="refreshing">렌더링 중...</span>
+                </button>
+              </div>
+              <div x-show="editMsg" class="text-sm mt-sm" :style="editMsg.includes('완료')?'color:var(--green)':'color:var(--red)'" x-text="editMsg"></div>
+            </div>
+          </div>
+
+          <!-- AI 탭 -->
+          <div x-show="editTab==='ai'">
+            <p class="text-sm text-tertiary" style="margin-bottom:12px;">현재 선택된 슬라이드(<span x-text="slides[sIdx]?.type" style="color:var(--blue);font-weight:600;"></span>)의 HTML을 AI가 수정합니다.</p>
+            <label>수정 요청
+              <textarea x-model="aiPrompt" rows="3" placeholder="예: 배경색을 더 어둡게 해줘 / 폰트 크기를 키워줘 / 그라디언트 효과 추가해줘"></textarea>
+            </label>
+            <button type="button" @click="runAi()" :disabled="aiRunning" class="btn btn-primary btn-sm mb-md">
+              <span x-show="!aiRunning">AI에게 수정 요청</span><span x-show="aiRunning">생성 중... (30초~1분)</span>
+            </button>
+
+            <!-- AI 결과 -->
+            <div x-show="aiResult">
+              <div class="text-xs text-tertiary" style="margin-bottom:6px;">AI 수정 결과</div>
+              <div class="code-block" style="max-height:300px;overflow-y:auto;margin-bottom:12px;">
+                <pre x-text="aiResult"></pre>
+              </div>
+              <div class="flex" style="gap:8px;">
+                <button type="button" @click="applyAi()" class="btn btn-primary btn-sm">코드에 적용</button>
+                <button type="button" @click="aiResult=''" class="btn btn-secondary btn-sm">무시</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단: 새 템플릿 생성 -->
+      <details style="margin-top:28px;">
+        <summary class="text-sm" style="color:var(--text-secondary);">새 템플릿 생성</summary>
+        <div class="card" style="padding:20px;margin-top:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;">
+            <label style="margin:0;"><span class="text-xs text-tertiary">이름 (영문소문자)</span><input type="text" x-model="newName" placeholder="my-custom" style="margin-top:4px;"></label>
+            <label style="margin:0;"><span class="text-xs text-tertiary">복사 원본</span><select x-model="newCopyFrom" style="margin-top:4px;"><option value="">기본</option><template x-for="t in currentSlides" :key="t.name"><option :value="t.name" x-text="t.name"></option></template></select></label>
+            <button type="button" @click="create()" :disabled="creating" class="btn btn-primary btn-sm">생성</button>
+          </div>
+          <div x-show="msg" class="text-sm mt-sm" :style="msg.includes('완료')?'color:var(--green)':'color:var(--red)'" x-text="msg"></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- ═══ Tab: API & 인증 ═══ -->
+    <div x-show="tab === 'api'" x-transition.opacity>
+      <div class="alert alert-danger" style="margin-bottom:24px;">⚠️ 민감한 정보입니다. 유출에 주의하세요.</div>
+      <fieldset>
+        <legend>Instagram Graph API</legend>
+        <label>Account ID * <input type="text" name="ig_account_id" value="<%= account ? account.ig_account_id || '' : '' %>" required placeholder="17841439932762846"><small>Instagram Business Account ID</small></label>
+        <label>Access Token *<%= account && account.id ? ' (변경 시에만 입력)' : '' %> <input type="password" name="ig_access_token" <%= account && account.id ? '' : 'required' %> placeholder="IGAAxxxxxxx..."><small>Instagram Graph API 장기 토큰</small></label>
+      </fieldset>
+      <fieldset>
+        <legend>Cloudinary</legend>
+        <p class="text-sm text-tertiary" style="margin-bottom:12px;">비워두면 서버 환경변수의 공유 설정을 사용합니다.</p>
+        <div class="grid-2">
+          <label>Cloud Name <input type="text" name="cloudinary_cloud_name" value="<%= account ? account.cloudinary_cloud_name || '' : '' %>"></label>
+          <label>API Key <input type="text" name="cloudinary_api_key" value="<%= account ? account.cloudinary_api_key || '' : '' %>"></label>
+        </div>
+        <label>API Secret<%= account && account.id ? ' (변경 시에만 입력)' : '' %> <input type="password" name="cloudinary_api_secret"></label>
+      </fieldset>
+      <% if (account && account.id) { %>
+        <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border);">
+          <h3 style="color:var(--red);margin-bottom:12px;">위험 영역</h3>
+          <p class="text-sm text-tertiary" style="margin-bottom:16px;">계정을 삭제하면 모든 히스토리가 삭제됩니다.</p>
+          <form method="POST" action="/accounts/<%= account.id %>/delete" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+            <button type="submit" class="btn btn-danger btn-sm">계정 삭제</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Submit -->
+    <div style="margin-top:32px;display:flex;gap:8px;">
+      <button type="submit" class="btn btn-primary"><%= account && account.id ? '저장' : '추가' %></button>
+      <a href="<%= account && account.id ? '/accounts/' + account.id : '/accounts' %>" class="btn btn-secondary">취소</a>
+    </div>
+  </form>
+</main>
+
+<%- include('../partials/foot') %>

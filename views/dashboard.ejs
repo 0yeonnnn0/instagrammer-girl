@@ -1,0 +1,95 @@
+<%- include('partials/head', { title: '대시보드' }) %>
+<%- include('partials/nav') %>
+
+<main class="container-wide fade-in">
+  <div class="flex-between mb-lg">
+    <h1>대시보드</h1>
+    <a href="/accounts/new" class="btn btn-primary btn-sm">+ 계정 추가</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.totalAccounts %></div>
+      <div class="stat-label">등록 계정</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.todayJobs %></div>
+      <div class="stat-label">오늘 작업</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= stats.successRate %><span style="font-size: 1rem; font-weight: 500;">%</span></div>
+      <div class="stat-label">성공률</div>
+    </div>
+  </div>
+
+  <!-- Accounts -->
+  <h2 class="mb-md">계정</h2>
+  <% if (accounts.length === 0) { %>
+    <div class="card" style="text-align: center; padding: 48px;">
+      <p class="text-secondary" style="margin-bottom: 16px;">등록된 계정이 없습니다</p>
+      <a href="/accounts/new" class="btn btn-primary">첫 계정 추가하기</a>
+    </div>
+  <% } else { %>
+    <div class="card-grid mb-lg">
+      <% accounts.forEach((account, i) => { %>
+        <div class="card fade-in" style="animation-delay: <%= i * 60 %>ms;">
+          <div class="flex-between">
+            <div class="flex">
+              <span class="dot <%= account.is_active ? 'dot-active' : 'dot-paused' %>"></span>
+              <a href="/accounts/<%= account.id %>" style="font-weight: 700; color: var(--text-primary);"><%= account.name %></a>
+            </div>
+            <span class="badge badge-<%= account.is_active ? 'green' : 'muted' %>"><%= account.is_active ? '활성' : '중지' %></span>
+          </div>
+          <div class="text-sm text-secondary mt-sm" style="line-height: 1.8;">
+            <div><%= account.template %> · <%= account.tone %></div>
+            <div><%= account.schedule_cron %> · <%= account.content_type === 'both' ? '카드+릴스' : account.content_type === 'card' ? '카드만' : '릴스만' %></div>
+          </div>
+          <% if (account.lastJob) { %>
+            <div class="text-sm mt-sm flex">
+              <span class="badge badge-<%= account.lastJob.status === 'success' ? 'green' : account.lastJob.status === 'running' ? 'yellow' : 'red' %>" style="font-size:0.7rem"><%= account.lastJob.status %></span>
+              <span class="text-tertiary"><%= account.lastJob.topic %></span>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Recent Jobs -->
+  <h2 class="mb-md">최근 작업</h2>
+  <% if (recentJobs.length === 0) { %>
+    <p class="text-secondary">아직 작업이 없습니다.</p>
+  <% } else { %>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>계정</th>
+            <th>타입</th>
+            <th>주제</th>
+            <th>상태</th>
+            <th>시간</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentJobs.forEach(job => { %>
+            <tr>
+              <td style="font-weight: 600;"><%= job.account_name %></td>
+              <td><span class="badge badge-blue"><%= job.type %></span></td>
+              <td><a href="/jobs/<%= job.id %>"><%= job.topic.substring(0, 40) %></a></td>
+              <td>
+                <span class="badge badge-<%= job.status === 'success' ? 'green' : job.status === 'running' ? 'yellow' : job.status === 'pending' ? 'muted' : 'red' %>">
+                  <%= job.status %>
+                </span>
+              </td>
+              <td class="text-sm text-tertiary"><%= job.created_at ? job.created_at.substring(0, 16) : '' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/foot') %>

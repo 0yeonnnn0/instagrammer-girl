@@ -1,0 +1,83 @@
+<%- include('../partials/head', { title: '작업 #' + job.id }) %>
+<%- include('../partials/nav') %>
+
+<main class="container-wide fade-in">
+  <!-- Header -->
+  <div class="flex-between mb-lg">
+    <div>
+      <h1 style="margin-bottom: 4px;">작업 #<%= job.id %></h1>
+      <div class="flex text-sm">
+        <a href="/accounts/<%= job.account_id %>"><%= job.account_name %></a>
+        <span class="text-tertiary">·</span>
+        <span class="badge badge-blue"><%= job.type %></span>
+        <span class="badge badge-<%= job.trigger_type === 'manual' ? 'yellow' : 'muted' %>"><%= job.trigger_type %></span>
+      </div>
+    </div>
+    <span class="badge badge-<%= job.status === 'success' ? 'green' : job.status === 'running' ? 'yellow' : job.status === 'pending' ? 'muted' : 'red' %>" style="font-size: 0.9rem; padding: 6px 18px;">
+      <%= job.status %>
+    </span>
+  </div>
+
+  <!-- Info -->
+  <div class="card mb-md" style="padding: 20px 24px;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">주제</div>
+        <div style="font-weight: 600;"><%= job.topic %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">시작</div>
+        <div class="text-sm"><%= job.started_at || '—' %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">종료</div>
+        <div class="text-sm"><%= job.finished_at || '—' %></div>
+      </div>
+    </div>
+    <% if (job.output_dir) { %>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">출력 경로</div>
+        <div class="text-sm text-secondary"><%= job.output_dir %></div>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Preview -->
+  <% if (slides.length > 0) { %>
+    <h2 class="mb-md">미리보기</h2>
+    <div class="thumb-grid mb-lg">
+      <% slides.forEach(src => { %>
+        <a href="<%= src %>" target="_blank">
+          <img src="<%= src %>" alt="slide" loading="lazy">
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (hasVideo) { %>
+    <h2 class="mb-md">영상</h2>
+    <div class="mb-lg">
+      <video controls style="max-width: 320px; border-radius: var(--radius);">
+        <source src="<%= slides.length > 0 ? slides[0].replace(/scene_\d+\.png/, 'reel.mp4') : '' %>" type="video/mp4">
+      </video>
+    </div>
+  <% } %>
+
+  <!-- Caption -->
+  <% if (caption) { %>
+    <h2 class="mb-md">캡션</h2>
+    <div class="card mb-lg" style="padding: 20px;">
+      <pre style="white-space: pre-wrap; font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.7;"><%= caption %></pre>
+    </div>
+  <% } %>
+
+  <!-- Logs -->
+  <% if (logs) { %>
+    <h2 class="mb-md">로그</h2>
+    <div class="code-block">
+      <pre><%= logs %></pre>
+    </div>
+  <% } %>
+</main>
+
+<%- include('../partials/foot') %>

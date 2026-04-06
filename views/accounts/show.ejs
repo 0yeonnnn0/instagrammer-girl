@@ -1,0 +1,150 @@
+<%- include('../partials/head', { title: account.name }) %>
+<%- include('../partials/nav') %>
+
+<main class="container-wide fade-in">
+  <!-- Header -->
+  <div class="flex-between mb-lg">
+    <div class="flex" style="gap: 12px;">
+      <span class="dot <%= account.is_active ? 'dot-active' : 'dot-paused' %>" style="width:10px;height:10px;"></span>
+      <h1 style="margin:0;"><%= account.name %></h1>
+    </div>
+    <div class="flex">
+      <form method="POST" action="/accounts/<%= account.id %>/toggle" style="margin:0">
+        <button type="submit" class="btn <%= account.is_active ? 'btn-secondary' : 'btn-primary' %> btn-sm">
+          <%= account.is_active ? '중지' : '활성화' %>
+        </button>
+      </form>
+      <a href="/accounts/<%= account.id %>/edit" class="btn btn-secondary btn-sm">계정 설정</a>
+    </div>
+  </div>
+
+  <!-- Settings Summary -->
+  <div class="card mb-md" style="padding: 20px 24px;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">템플릿</div>
+        <div class="text-sm" style="font-weight: 600;"><%= account.template %> / <%= account.reel_template %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">톤</div>
+        <div class="text-sm" style="font-weight: 600;"><%= account.tone %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">콘텐츠</div>
+        <div class="text-sm" style="font-weight: 600;"><%= account.content_type === 'both' ? '카드+릴스' : account.content_type %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">스케줄</div>
+        <div class="text-sm" style="font-weight: 600;"><%= account.schedule_cron %></div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">악센트</div>
+        <div class="flex" style="gap: 6px;">
+          <span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:<%= account.accent_color %>;"></span>
+          <span class="text-sm"><%= account.accent_color %></span>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">예산</div>
+        <div class="text-sm" style="font-weight: 600;">$<%= account.max_budget_usd %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">IG Account</div>
+        <div class="text-sm text-secondary"><%= account.ig_account_id %></div>
+      </div>
+      <div>
+        <div class="text-xs text-tertiary" style="margin-bottom: 4px;">토큰</div>
+        <div class="text-sm text-secondary"><%= account.ig_access_token_preview %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Generate -->
+  <div class="flex mb-lg" x-data="{ type: 'both' }">
+    <form method="POST" action="/accounts/<%= account.id %>/generate" class="flex" style="margin:0;">
+      <select name="type" x-model="type" style="width: auto; padding: 8px 32px 8px 12px; margin: 0;">
+        <option value="both">카드+릴스</option>
+        <option value="card">카드만</option>
+        <option value="reel">릴스만</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">지금 생성</button>
+    </form>
+  </div>
+
+  <!-- History Tabs -->
+  <div x-data="{ historyTab: 'jobs' }">
+    <div class="tabs">
+      <button type="button" class="tab-btn" :class="{ active: historyTab === 'jobs' }" @click="historyTab = 'jobs'">작업 히스토리 (<%= jobs.length %>)</button>
+      <button type="button" class="tab-btn" :class="{ active: historyTab === 'topics' }" @click="historyTab = 'topics'">사용된 주제 (<%= topics.length %>)</button>
+    </div>
+
+    <!-- Jobs -->
+    <div x-show="historyTab === 'jobs'" x-transition.opacity>
+      <% if (jobs.length === 0) { %>
+        <p class="text-secondary">아직 작업이 없습니다.</p>
+      <% } else { %>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>타입</th>
+                <th>주제</th>
+                <th>상태</th>
+                <th>트리거</th>
+                <th>시간</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% jobs.forEach(job => { %>
+                <tr>
+                  <td><span class="badge badge-blue"><%= job.type %></span></td>
+                  <td><a href="/jobs/<%= job.id %>"><%= job.topic.substring(0, 50) %></a></td>
+                  <td>
+                    <span class="badge badge-<%= job.status === 'success' ? 'green' : job.status === 'running' ? 'yellow' : job.status === 'pending' ? 'muted' : 'red' %>">
+                      <%= job.status %>
+                    </span>
+                  </td>
+                  <td><span class="text-sm text-tertiary"><%= job.trigger_type %></span></td>
+                  <td class="text-sm text-tertiary"><%= job.created_at ? job.created_at.substring(0, 16) : '' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Topics -->
+    <div x-show="historyTab === 'topics'" x-transition.opacity>
+      <% if (topics.length === 0) { %>
+        <p class="text-secondary">아직 사용된 주제가 없습니다.</p>
+      <% } else { %>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>타입</th>
+                <th>주제</th>
+                <th>사용일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% topics.forEach(t => { %>
+                <tr>
+                  <td><span class="badge badge-blue"><%= t.type %></span></td>
+                  <td><%= t.topic %></td>
+                  <td class="text-sm text-tertiary"><%= t.used_at ? t.used_at.substring(0, 10) : '' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+</main>
+
+<%- include('../partials/foot') %>
