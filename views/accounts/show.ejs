@@ -35,7 +35,8 @@
       </div>
       <div>
         <div class="text-xs text-tertiary" style="margin-bottom: 4px;">스케줄</div>
-        <div class="text-sm" style="font-weight: 600;"><%= account.schedule_cron %></div>
+        <% const sp = (account.schedule_cron || '0 7 * * *').split(' '); const sh = (parseInt(sp[1])+9)%24; const sm = parseInt(sp[0])||0; %>
+        <div class="text-sm" style="font-weight: 600;">매일 <%= String(sh).padStart(2,'0') %>:<%= String(sm).padStart(2,'0') %> (KST)</div>
       </div>
     </div>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">

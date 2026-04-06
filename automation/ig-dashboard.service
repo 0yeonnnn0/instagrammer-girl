@@ -1,0 +1,15 @@
+[Unit]
+Description=IG Dashboard — Instagram Content Automation
+After=network.target
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__PROJECT_DIR__
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+EnvironmentFile=__PROJECT_DIR__/.env
+
+[Install]
+WantedBy=multi-user.target

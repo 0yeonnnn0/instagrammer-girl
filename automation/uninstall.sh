@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PLIST_DST="$HOME/Library/LaunchAgents/com.yeonnnn.cardnews.plist"
+PLIST_DST="$HOME/Library/LaunchAgents/ig-cardnews.plist"
 
 echo "=== Uninstalling Card News Scheduler ==="
 

@@ -3,8 +3,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-PLIST_SRC="$SCRIPT_DIR/com.yeonnnn.cardnews.plist"
-PLIST_DST="$HOME/Library/LaunchAgents/com.yeonnnn.cardnews.plist"
+PLIST_SRC="$SCRIPT_DIR/ig-cardnews.plist"
+PLIST_DST="$HOME/Library/LaunchAgents/ig-cardnews.plist"
 
 echo "=== Instagram Card News Scheduler ==="
 echo "Project: $PROJECT_DIR"
@@ -21,7 +21,7 @@ echo "Node: $NODE_PATH"
 mkdir -p "$PROJECT_DIR/logs"
 
 # Unload existing if present
-if launchctl list | grep -q com.yeonnnn.cardnews 2>/dev/null; then
+if launchctl list | grep -q ig-cardnews 2>/dev/null; then
   echo "Unloading existing schedule..."
   launchctl unload "$PLIST_DST" 2>/dev/null || true
 fi

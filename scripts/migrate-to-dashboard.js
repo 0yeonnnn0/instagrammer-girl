@@ -54,7 +54,7 @@ if (!existingAccount) {
         rss_hackernews, rss_devto, max_budget_usd, timeout_minutes)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      config.defaults.account_name || 'dev.daaram',
+      config.defaults.account_name || 'my_account',
       igAccountId,
       encrypt(igToken),
       process.env.CLOUDINARY_CLOUD_NAME || null,
