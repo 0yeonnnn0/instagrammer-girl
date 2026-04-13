@@ -30,8 +30,9 @@ module.exports = async function (fastify) {
           schedule_cron, slide_count, scene_count, backup_topics,
           rss_hackernews, rss_devto, max_budget_usd, timeout_minutes,
           card_prompt, reel_prompt,
-          card_strategy, reel_strategy, card_strategy_prompt, reel_strategy_prompt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          card_strategy, reel_strategy, card_strategy_prompt, reel_strategy_prompt,
+          ai_provider, ai_model)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         b.name, b.ig_account_id, encrypt(b.ig_access_token),
         b.cloudinary_cloud_name || null, b.cloudinary_api_key || null, b.cloudinary_api_secret ? encrypt(b.cloudinary_api_secret) : null,
@@ -44,7 +45,8 @@ module.exports = async function (fastify) {
         parseFloat(b.max_budget_usd) || 5.0, parseInt(b.timeout_minutes) || 15,
         b.card_prompt || null, b.reel_prompt || null,
         b.card_strategy || 'tutorial', b.reel_strategy || 'news',
-        b.card_strategy_prompt || null, b.reel_strategy_prompt || null
+        b.card_strategy_prompt || null, b.reel_strategy_prompt || null,
+        b.ai_provider || 'claude', b.ai_model || null
       );
       scheduler.scheduleAccount(result.lastInsertRowid);
       return reply.redirect(`/accounts/${result.lastInsertRowid}`);
@@ -108,6 +110,7 @@ module.exports = async function (fastify) {
         card_prompt = ?, reel_prompt = ?,
         card_strategy = ?, reel_strategy = ?,
         card_strategy_prompt = ?, reel_strategy_prompt = ?,
+        ai_provider = ?, ai_model = ?,
         updated_at = datetime('now')
         ${tokenUpdate}${secretUpdate}
         WHERE id = ?`;
@@ -125,6 +128,7 @@ module.exports = async function (fastify) {
         b.card_prompt || null, b.reel_prompt || null,
         b.card_strategy || 'tutorial', b.reel_strategy || 'news',
         b.card_strategy_prompt || null, b.reel_strategy_prompt || null,
+        b.ai_provider || 'claude', b.ai_model || null,
       ];
 
       if (b.ig_access_token) params.push(encrypt(b.ig_access_token));

@@ -41,7 +41,15 @@
         this.updatePreview();
         this.testing = true; this.testResult = '테스트 실행 중... (30초~2분 소요)';
         try {
-          const r = await fetch('/api/prompt-test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt:this.preview}) });
+          const r = await fetch('/api/prompt-test', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              prompt:this.preview,
+              provider:g('ai_provider'),
+              model:g('ai_model'),
+            })
+          });
           const d = await r.json();
           this.testResult = d.result || d.error || 'No response';
         } catch(e) { this.testResult = 'Error: '+e.message; }
@@ -69,6 +77,18 @@
               <option value="card" <%= account && account.content_type === 'card' ? 'selected' : '' %>>카드만</option>
               <option value="reel" <%= account && account.content_type === 'reel' ? 'selected' : '' %>>릴스만</option>
             </select>
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>AI Provider
+            <select name="ai_provider">
+              <option value="claude" <%= account && account.ai_provider === 'claude' ? 'selected' : (!account || !account.ai_provider) ? 'selected' : '' %>>Claude CLI</option>
+              <option value="codex" <%= account && account.ai_provider === 'codex' ? 'selected' : '' %>>Codex CLI</option>
+            </select>
+          </label>
+          <label>AI Model (선택)
+            <input type="text" name="ai_model" value="<%= account && account.ai_model ? account.ai_model : '' %>" placeholder="예: sonnet / gpt-5.4">
+            <small>비워두면 provider 기본 모델을 사용합니다.</small>
           </label>
         </div>
       </fieldset>
@@ -266,7 +286,7 @@
         <% if (account && account.id) { %>
           <div class="flex" style="gap:12px;">
             <button type="button" @click="runTest()" :disabled="testing" class="btn btn-primary btn-sm">
-              <span x-show="!testing">Claude에 테스트 전송</span><span x-show="testing">실행 중...</span>
+              <span x-show="!testing">선택한 AI로 테스트</span><span x-show="testing">실행 중...</span>
             </button>
             <span class="text-xs text-tertiary" style="margin-top:2px;">카피라이팅 결과만 확인 (업로드 없음)</span>
           </div>
@@ -340,7 +360,7 @@
       <fieldset>
         <legend>리소스 제한</legend>
         <div class="grid-2">
-          <label>예산 (USD/회) <input type="number" name="max_budget_usd" value="<%= account ? account.max_budget_usd || 5 : 5 %>" step="0.5" min="1"><small>Claude API 사용량 상한</small></label>
+          <label>예산 (USD/회) <input type="number" name="max_budget_usd" value="<%= account ? account.max_budget_usd || 5 : 5 %>" step="0.5" min="1"><small>Claude 실행 시에만 사용됩니다.</small></label>
           <label>타임아웃 (분) <input type="number" name="timeout_minutes" value="<%= account ? account.timeout_minutes || 15 : 15 %>" min="5" max="60"><small>생성 작업 최대 실행 시간</small></label>
         </div>
       </fieldset>
@@ -412,9 +432,15 @@
         const st = this.slides[this.sIdx]?.type;
         const prompt = '아래 HTML 템플릿을 수정해줘. 수정된 HTML 전체를 출력해줘. 다른 설명 없이 HTML만.\\n\\n요청: ' + this.aiPrompt + '\\n\\n현재 HTML:\\n' + this.editHtml;
         try {
+          const providerEl = document.querySelector('[name=ai_provider]');
+          const modelEl = document.querySelector('[name=ai_model]');
           const r = await fetch('/api/prompt-test', {
             method: 'POST', headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ prompt })
+            body: JSON.stringify({
+              prompt,
+              provider: providerEl ? providerEl.value : '',
+              model: modelEl ? modelEl.value : '',
+            })
           });
           const d = await r.json();
           this.aiResult = d.result || d.error || '';

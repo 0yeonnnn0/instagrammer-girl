@@ -81,6 +81,8 @@
     "scene_duration": 2.5
   },
   "automation": {
+    "ai_provider": "claude",
+    "ai_model": "",
     "schedule_hour": 7,
     "schedule_minute": 0,
     "template": "studio",

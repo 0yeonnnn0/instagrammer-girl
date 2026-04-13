@@ -11,14 +11,17 @@ services:
       - ./templates:/app/templates
       - ./templates-reel:/app/templates-reel
       - ./assets:/app/assets
-      # Mount Claude CLI config from host (read-only)
+      # Mount AI CLI configs from host (read-only)
       - ${HOME}/.claude:/root/.claude:ro
+      - ${HOME}/.codex:/root/.codex:ro
     environment:
       - NODE_ENV=production
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-change-this-encryption-key-32chars!!}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - SESSION_SECRET=${SESSION_SECRET:-change-this-session-secret-32chars!!}
+      - AI_PROVIDER=${AI_PROVIDER:-claude}
+      - AI_MODEL=${AI_MODEL:-}
       # Shared Cloudinary (accounts can override)
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}

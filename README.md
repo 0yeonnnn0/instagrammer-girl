@@ -2,7 +2,7 @@
 
 Instagram 카드뉴스 & 릴스를 자동으로 생성하고 업로드하는 대시보드.
 
-AI(Claude)가 리서치 → 카피라이팅 → 렌더링 → 업로드 전 과정을 자동화합니다.
+AI CLI(Claude 또는 Codex)가 리서치 → 카피라이팅 → 렌더링 → 업로드 전 과정을 자동화합니다.
 
 ## 주요 기능
 
@@ -25,7 +25,7 @@ AI(Claude)가 리서치 → 카피라이팅 → 렌더링 → 업로드 전 과�
 |------|------|
 | Web | Fastify + EJS + Alpine.js + htmx |
 | DB | SQLite (better-sqlite3) |
-| AI | Claude Code CLI |
+| AI | Claude CLI 또는 Codex CLI |
 | 렌더링 | Puppeteer (HTML → PNG) |
 | 영상 | FFmpeg (PNG → MP4) |
 | 업로드 | Instagram Graph API (Cloudinary 중계) |
@@ -37,7 +37,7 @@ AI(Claude)가 리서치 → 카피라이팅 → 렌더링 → 업로드 전 과�
 ### 필수 조건
 
 - Node.js 20+
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) (Claude Max 구독)
+- Claude CLI 또는 Codex CLI 중 하나
 - FFmpeg (`brew install ffmpeg` / `apt install ffmpeg`)
 - Instagram Business 계정 + Graph API 토큰
 - Cloudinary 계정 (무료 플랜 OK)
@@ -55,6 +55,7 @@ npm install
 ```bash
 cp .env.example .env
 # .env 파일을 열어서 API 키를 입력하세요
+# 필요하면 AI_PROVIDER=codex 로 변경
 ```
 
 ### 실행
@@ -66,6 +67,8 @@ npm start
 # http://localhost:3000 접속
 # 기본 로그인: admin / admin
 ```
+
+계정 설정 화면에서 계정별로 `AI Provider`와 `AI Model`을 따로 지정할 수 있습니다.
 
 ### 기존 데이터 마이그레이션 (선택)
 
@@ -107,6 +110,7 @@ npm run dashboard:install
 │   ├── auth.js            # 인증
 │   ├── crypto.js          # 토큰 암호화
 │   ├── scheduler.js       # 계정별 스케줄러
+│   ├── ai-provider.js     # Claude/Codex 실행 추상화
 │   ├── job-runner.js      # 콘텐츠 생성 파이프라인
 │   └── feeds.js           # RSS 수집
 ├── routes/                # API 라우트
