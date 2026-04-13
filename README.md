@@ -38,6 +38,7 @@ AI CLI(Claude 또는 Codex)가 리서치 → 카피라이팅 → 렌더링 → �
 
 - Node.js 20+
 - Claude CLI 또는 Codex CLI 중 하나
+- Docker에서 Codex를 쓸 경우 이미지 안에 Codex CLI가 설치되어 있어야 함
 - FFmpeg (`brew install ffmpeg` / `apt install ffmpeg`)
 - Instagram Business 계정 + Graph API 토큰
 - Cloudinary 계정 (무료 플랜 OK)
@@ -69,6 +70,12 @@ npm start
 ```
 
 계정 설정 화면에서 계정별로 `AI Provider`와 `AI Model`을 따로 지정할 수 있습니다.
+
+### Codex 사용 시
+
+- 저장소 루트의 `CODEX.md`를 통해 Codex 런타임 지침을 제공합니다.
+- Docker 이미지에는 `@openai/codex` CLI가 포함됩니다.
+- 컨테이너에서는 호스트의 `~/.codex` 설정을 마운트해 인증 정보를 사용합니다.
 
 ### 기존 데이터 마이그레이션 (선택)
 

@@ -4,7 +4,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { requireAuth } = require('../lib/auth');
-const { runPrompt, defaultModelFor } = require('../lib/ai-provider');
+const { runPrompt, defaultModelFor, checkProviderAvailable } = require('../lib/ai-provider');
 
 const ROOT = path.join(__dirname, '..');
 const TEMPLATES_DIR = path.join(ROOT, 'templates');
@@ -106,6 +106,11 @@ module.exports = async function (fastify) {
   fastify.post('/api/prompt-test', async (request, reply) => {
     const { prompt, provider, model } = request.body || {};
     if (!prompt) return reply.send({ error: '프롬프트가 비어있습니다.' });
+
+    const availability = checkProviderAvailable({ cwd: ROOT, provider });
+    if (!availability.ok) {
+      return reply.send({ error: `${availability.provider} 실행 불가: ${availability.message.substring(0, 2000)}` });
+    }
 
     const testPrompt = `[테스트 모드 — 업로드하지 마세요. 렌더링도 하지 마세요. 카피라이팅 결과만 JSON으로 보여주세요.]\n\n${prompt.replace(/업로드까지 해줘[.]?/g, '카피라이팅 결과만 JSON으로 보여줘.')}`;
 
