@@ -60,6 +60,17 @@
         <div class="text-sm text-secondary"><%= account.ig_access_token_preview %></div>
       </div>
     </div>
+    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+      <div class="text-xs text-tertiary" style="margin-bottom: 4px;">카드 주제 모드</div>
+      <% if (account.card_topic_mode === 'series') { %>
+        <div class="text-sm" style="font-weight: 600;">
+          시리즈 · <%= account.card_series_framework || 'React' %> <%= account.card_series_current_part || 1 %>/<%= account.card_series_total_parts || 10 %>
+          <span class="text-tertiary" style="font-weight: 400;">(완료 후 <%= account.card_series_loop ? '1편으로 반복' : '마지막 편 유지' %>)</span>
+        </div>
+      <% } else { %>
+        <div class="text-sm" style="font-weight: 600;">백업 주제 순환</div>
+      <% } %>
+    </div>
   </div>
 
   <!-- Manual Generate -->

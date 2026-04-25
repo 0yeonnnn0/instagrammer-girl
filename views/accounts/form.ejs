@@ -13,7 +13,7 @@
     <!-- Tabs -->
     <div class="tabs">
       <button type="button" class="tab-btn" :class="{ active: tab === 'content' }" @click="tab = 'content'">콘텐츠 설정</button>
-      <button type="button" class="tab-btn" :class="{ active: tab === 'topics' }" @click="tab = 'topics'">백업 주제</button>
+      <button type="button" class="tab-btn" :class="{ active: tab === 'topics' }" @click="tab = 'topics'">주제 설정</button>
       <button type="button" class="tab-btn" :class="{ active: tab === 'automation' }" @click="tab = 'automation'">자동화</button>
       <button type="button" class="tab-btn" :class="{ active: tab === 'templates' }" @click="tab = 'templates'">템플릿 관리</button>
       <button type="button" class="tab-btn danger" :class="{ active: tab === 'api' }" @click="tab = 'api'">🔒 API & 인증</button>
@@ -304,11 +304,49 @@
       <input type="hidden" name="name" value="<%= account.name %>">
     <% } %>
 
-    <!-- ═══ Tab: 백업 주제 ═══ -->
-    <div x-show="tab === 'topics'" x-transition.opacity>
+    <!-- ═══ Tab: 주제 설정 ═══ -->
+    <div x-show="tab === 'topics'" x-transition.opacity x-data="{ cardTopicMode: '<%= account && account.card_topic_mode ? account.card_topic_mode : 'backup' %>' }">
+      <fieldset>
+        <legend>카드 주제 모드</legend>
+        <label>카드 주제 선택 방식
+          <select name="card_topic_mode" x-model="cardTopicMode">
+            <option value="backup">백업 주제 순환</option>
+            <option value="series">프레임워크 연재 (1~N)</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset x-show="cardTopicMode === 'series'" x-transition.opacity>
+        <legend>프레임워크 연재 설정</legend>
+        <div class="grid-2">
+          <label>프레임워크
+            <input type="text" name="card_series_framework" value="<%= account && account.card_series_framework ? account.card_series_framework : 'React' %>" placeholder="React">
+          </label>
+          <label>총 파트 수
+            <input type="number" name="card_series_total_parts" value="<%= account ? account.card_series_total_parts || 10 : 10 %>" min="2" max="100">
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>현재 파트
+            <input type="number" name="card_series_current_part" value="<%= account ? account.card_series_current_part || 1 : 1 %>" min="1" max="100">
+            <small>성공 발행 시 자동으로 다음 파트로 이동합니다.</small>
+          </label>
+          <label style="display:flex;align-items:center;cursor:pointer;">
+            <input type="checkbox" name="card_series_loop" value="1" <%= !account || typeof account.card_series_loop === 'undefined' || account.card_series_loop ? 'checked' : '' %>>
+            마지막 파트 완료 후 1편으로 다시 시작
+          </label>
+        </div>
+        <p class="text-sm text-tertiary" style="margin: 6px 0 0;">
+          카드 프롬프트에는 자동으로 "공식 문서 기반, 이번 편 개념 1개 집중" 지시가 추가됩니다.
+        </p>
+      </fieldset>
+
       <fieldset>
         <legend>백업 주제 목록</legend>
-        <p class="text-sm text-tertiary" style="margin-bottom:12px;">RSS에서 릴스 주제를 못 찾을 때, 카드뉴스용 예비 주제로 사용됩니다. 한 줄에 하나씩, 위에서부터 순서대로 소비됩니다.</p>
+        <p class="text-sm text-tertiary" style="margin-bottom:12px;">
+          <span x-show="cardTopicMode === 'backup'">카드 주제를 이 목록에서 순환 선택합니다. 한 줄에 하나씩 입력하세요.</span>
+          <span x-show="cardTopicMode === 'series'">시리즈 모드에서 프레임워크가 비어있거나 모드를 바꿀 때 사용할 백업 주제입니다.</span>
+        </p>
         <textarea name="backup_topics" rows="12" placeholder="Docker 핵심 명령어 정리&#10;Git 고급 활용법&#10;API 설계 베스트 프랙티스"><%= account && account.backup_topics ? account.backup_topics : '' %></textarea>
       </fieldset>
     </div>
