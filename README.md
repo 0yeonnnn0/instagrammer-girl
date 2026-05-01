@@ -13,6 +13,8 @@ AI CLI(Claude 또는 Codex)가 리서치 → 카피라이팅 → 렌더링 → �
 - **템플릿 편집** — 웹에서 HTML 직접 수정 + AI에게 수정 요청
 - **프롬프트 커스터마이징** — 콘텐츠 전략 설정 + 추가 지시사항 + 실시간 테스트
 - **콘텐츠 전략** — 카드뉴스(튜토리얼/팁), 릴스(뉴스/트렌드) 등 전략별 프롬프트
+- **시리즈 모드** — React/Kotlin 같은 프레임워크를 `#1~#N` 순서로 자동 발행
+- **프레임워크 전환** — React `10/10` 완료 후 Kotlin `1/10` 자동 전환
 - **작업 히스토리** — 성공/실패 로그, 생성된 슬라이드 미리보기
 
 ## 스크린샷
@@ -70,6 +72,26 @@ npm start
 
 계정 설정 화면에서 계정별로 `AI Provider`와 `AI Model`을 따로 지정할 수 있습니다.
 
+### 카드 시리즈 모드
+
+계정 설정의 `주제 설정` 탭에서 카드 주제를 시리즈로 운용할 수 있습니다.
+
+- `card_topic_mode=series`: 백업 주제 대신 시리즈 파트로 생성
+- `card_series_framework`: 예) `React`, `Kotlin`
+- `card_series_current_part`: 현재 파트
+- `card_series_total_parts`: 전체 파트 수
+- `card_series_loop`: 마지막 파트 이후 반복 여부
+
+현재 기본 커리큘럼:
+
+- React 1~10 (컴포넌트/props/state/useEffect 등)
+- Kotlin 1~10 (기본문법/null-safety/컬렉션/코루틴 등)
+
+전환 규칙:
+
+- React `10/10` 성공 시 다음 실행부터 Kotlin `1/10` 자동 전환
+- `card_series_loop=0`일 때도 위 전환 규칙이 우선 적용됩니다.
+
 ### 기존 데이터 마이그레이션 (선택)
 
 이미 CLI로 카드뉴스를 생성해왔다면:
@@ -79,6 +101,15 @@ npm run migrate
 ```
 
 ## 배포
+
+권장 운영 경로는 `worker.js` 단일 스케줄러입니다.
+`server.js`는 대시보드/API만 담당하고, 자동 실행은 `worker.js`에 맡기세요.
+
+이유:
+
+- `server.js`와 `worker.js`가 동시에 스케줄러를 돌면 같은 시간에 중복 게시가 발생할 수 있습니다.
+- 기본값으로 `server.js`의 스케줄러는 비활성화되어 있습니다.
+  - 활성화가 꼭 필요할 때만 `.env`에 `SERVER_RUN_SCHEDULER=1` 설정
 
 ### Docker (권장)
 
@@ -95,16 +126,47 @@ docker compose up -d
 bash automation/install-linux.sh
 ```
 
+### Raspberry Pi Worker Only (systemd)
+
+웹 대시보드 없이 자동화만 돌리려면:
+
+```bash
+npm run worker
+```
+
+라즈베리파이에서 부팅 시 자동 실행하려면:
+
+```bash
+npm run worker:install:linux
+```
+
+이 경로는 `worker.js`만 실행하며, `data/dashboard.db`에 저장된 활성 계정의 스케줄을 기준으로 카드뉴스/릴스를 생성합니다.
+
 ### macOS (launchd)
 
 ```bash
 npm run dashboard:install
 ```
 
+자동화만 백그라운드로 돌리려면:
+
+```bash
+npm run worker:install
+```
+
+이 경로는 `worker.js`를 `launchd`로 상시 유지하고, 실제 매일 아침 실행 시각은 계정의 `schedule_cron` 설정을 따릅니다.
+
+레거시 단일 스크립트 스케줄러를 과거에 설치했다면 제거:
+
+```bash
+npm run legacy:schedule:uninstall
+```
+
 ## 프로젝트 구조
 
 ```
 ├── server.js              # Fastify 엔트리포인트
+├── worker.js              # 자동화 워커(권장 스케줄 실행 주체)
 ├── lib/                   # 핵심 로직
 │   ├── db.js              # SQLite 연결
 │   ├── auth.js            # 인증
