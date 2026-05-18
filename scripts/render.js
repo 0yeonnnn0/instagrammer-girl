@@ -18,60 +18,61 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
  * @returns {string} Processed HTML
  */
 function applyPlaceholders(html, slide, opts, index, total) {
-  const body = (slide.body || '').replace(/\n/g, '<br>');
+  const normalizedSlide = normalizeSlideForRender(slide);
+  const body = (normalizedSlide.body || '').replace(/\n/g, '<br>');
 
   const replacements = {
-    '{{headline}}': (slide.headline || '').replace(/\n/g, '<br>'),
-    '{{headline_en}}': (slide.headline_en || '').replace(/\n/g, '<br>'),
-    '{{emphasis_en}}': (slide.emphasis_en || '').replace(/\n/g, '<br>'),
-    '{{subtext}}': (slide.subtext || '').replace(/\n/g, '<br>'),
+    '{{headline}}': (normalizedSlide.headline || '').replace(/\n/g, '<br>'),
+    '{{headline_en}}': (normalizedSlide.headline_en || '').replace(/\n/g, '<br>'),
+    '{{emphasis_en}}': (normalizedSlide.emphasis_en || '').replace(/\n/g, '<br>'),
+    '{{subtext}}': (normalizedSlide.subtext || '').replace(/\n/g, '<br>'),
     '{{body}}': body,
-    '{{emphasis}}': (slide.emphasis || '').replace(/\n/g, '<br>'),
-    '{{cta_text}}': slide.cta_text || '',
+    '{{emphasis}}': (normalizedSlide.emphasis || '').replace(/\n/g, '<br>'),
+    '{{cta_text}}': normalizedSlide.cta_text || '',
     '{{slide_number}}': String(index + 1).padStart(2, '0'),
     '{{total_slides}}': String(total).padStart(2, '0'),
     '{{accent_color}}': opts.accent || config.defaults.accent_color,
     '{{account_name}}': opts.account || config.defaults.account_name,
     // v2 placeholders
-    '{{image_url}}': slide.image_url || '',
-    '{{badge_text}}': slide.badge_text || '',
-    '{{step1}}': (slide.step1 || '').replace(/\n/g, '<br>'),
-    '{{step2}}': (slide.step2 || '').replace(/\n/g, '<br>'),
-    '{{step3}}': (slide.step3 || '').replace(/\n/g, '<br>'),
-    '{{item1}}': (slide.item1 || '').replace(/\n/g, '<br>'),
-    '{{item2}}': (slide.item2 || '').replace(/\n/g, '<br>'),
-    '{{item3}}': (slide.item3 || '').replace(/\n/g, '<br>'),
-    '{{item4}}': (slide.item4 || '').replace(/\n/g, '<br>'),
-    '{{item5}}': (slide.item5 || '').replace(/\n/g, '<br>'),
-    '{{left_title}}': slide.left_title || '',
-    '{{left_body}}': (slide.left_body || '').replace(/\n/g, '<br>'),
-    '{{right_title}}': slide.right_title || '',
-    '{{right_body}}': (slide.right_body || '').replace(/\n/g, '<br>'),
+    '{{image_url}}': normalizedSlide.image_url || '',
+    '{{badge_text}}': normalizedSlide.badge_text || '',
+    '{{step1}}': (normalizedSlide.step1 || '').replace(/\n/g, '<br>'),
+    '{{step2}}': (normalizedSlide.step2 || '').replace(/\n/g, '<br>'),
+    '{{step3}}': (normalizedSlide.step3 || '').replace(/\n/g, '<br>'),
+    '{{item1}}': (normalizedSlide.item1 || '').replace(/\n/g, '<br>'),
+    '{{item2}}': (normalizedSlide.item2 || '').replace(/\n/g, '<br>'),
+    '{{item3}}': (normalizedSlide.item3 || '').replace(/\n/g, '<br>'),
+    '{{item4}}': (normalizedSlide.item4 || '').replace(/\n/g, '<br>'),
+    '{{item5}}': (normalizedSlide.item5 || '').replace(/\n/g, '<br>'),
+    '{{left_title}}': normalizedSlide.left_title || '',
+    '{{left_body}}': (normalizedSlide.left_body || '').replace(/\n/g, '<br>'),
+    '{{right_title}}': normalizedSlide.right_title || '',
+    '{{right_body}}': (normalizedSlide.right_body || '').replace(/\n/g, '<br>'),
     // content-grid placeholders
-    '{{grid1_icon}}': (slide.grid1_icon || '').replace(/\n/g, '<br>'),
-    '{{grid1_title}}': (slide.grid1_title || '').replace(/\n/g, '<br>'),
-    '{{grid1_desc}}': (slide.grid1_desc || '').replace(/\n/g, '<br>'),
-    '{{grid2_icon}}': (slide.grid2_icon || '').replace(/\n/g, '<br>'),
-    '{{grid2_title}}': (slide.grid2_title || '').replace(/\n/g, '<br>'),
-    '{{grid2_desc}}': (slide.grid2_desc || '').replace(/\n/g, '<br>'),
-    '{{grid3_icon}}': (slide.grid3_icon || '').replace(/\n/g, '<br>'),
-    '{{grid3_title}}': (slide.grid3_title || '').replace(/\n/g, '<br>'),
-    '{{grid3_desc}}': (slide.grid3_desc || '').replace(/\n/g, '<br>'),
-    '{{grid4_icon}}': (slide.grid4_icon || '').replace(/\n/g, '<br>'),
-    '{{grid4_title}}': (slide.grid4_title || '').replace(/\n/g, '<br>'),
-    '{{grid4_desc}}': (slide.grid4_desc || '').replace(/\n/g, '<br>'),
+    '{{grid1_icon}}': (normalizedSlide.grid1_icon || '').replace(/\n/g, '<br>'),
+    '{{grid1_title}}': (normalizedSlide.grid1_title || '').replace(/\n/g, '<br>'),
+    '{{grid1_desc}}': (normalizedSlide.grid1_desc || '').replace(/\n/g, '<br>'),
+    '{{grid2_icon}}': (normalizedSlide.grid2_icon || '').replace(/\n/g, '<br>'),
+    '{{grid2_title}}': (normalizedSlide.grid2_title || '').replace(/\n/g, '<br>'),
+    '{{grid2_desc}}': (normalizedSlide.grid2_desc || '').replace(/\n/g, '<br>'),
+    '{{grid3_icon}}': (normalizedSlide.grid3_icon || '').replace(/\n/g, '<br>'),
+    '{{grid3_title}}': (normalizedSlide.grid3_title || '').replace(/\n/g, '<br>'),
+    '{{grid3_desc}}': (normalizedSlide.grid3_desc || '').replace(/\n/g, '<br>'),
+    '{{grid4_icon}}': (normalizedSlide.grid4_icon || '').replace(/\n/g, '<br>'),
+    '{{grid4_title}}': (normalizedSlide.grid4_title || '').replace(/\n/g, '<br>'),
+    '{{grid4_desc}}': (normalizedSlide.grid4_desc || '').replace(/\n/g, '<br>'),
     // content-bigdata placeholders
-    '{{bigdata_number}}': slide.bigdata_number || '',
-    '{{bigdata_unit}}': slide.bigdata_unit || '',
+    '{{bigdata_number}}': normalizedSlide.bigdata_number || '',
+    '{{bigdata_unit}}': normalizedSlide.bigdata_unit || '',
     // magazine style placeholders
-    '{{headline_label}}': slide.headline_label || '',
-    '{{tag1}}': slide.tag1 || '',
-    '{{tag2}}': slide.tag2 || '',
-    '{{tag3}}': slide.tag3 || '',
-    '{{badge_number}}': slide.badge_number || '',
+    '{{headline_label}}': normalizedSlide.headline_label || '',
+    '{{tag1}}': normalizedSlide.tag1 || '',
+    '{{tag2}}': normalizedSlide.tag2 || '',
+    '{{tag3}}': normalizedSlide.tag3 || '',
+    '{{badge_number}}': normalizedSlide.badge_number || '',
     // content-fullimage placeholders
-    '{{badge2_text}}': slide.badge2_text || '',
-    '{{body2}}': (slide.body2 || '').replace(/\n/g, '<br>'),
+    '{{badge2_text}}': normalizedSlide.badge2_text || '',
+    '{{body2}}': (normalizedSlide.body2 || '').replace(/\n/g, '<br>'),
   };
 
   let result = html;
@@ -83,6 +84,100 @@ function applyPlaceholders(html, slide, opts, index, total) {
   const accentColor = opts.accent || config.defaults.accent_color;
   result = result.split('{{accent_color}}').join(accentColor);
   return result;
+}
+
+function normalizeSlideForRender(slide) {
+  if ((slide.type || 'content') !== 'cover') return slide;
+
+  const headline = String(slide.headline || '');
+  const seriesMeta = extractSeriesMeta(headline) || extractSeriesMeta(slide.subtext || '');
+  if (!seriesMeta) return slide;
+
+  const cleanedHeadline = removeSeriesMeta(headline, seriesMeta.raw);
+  const fallbackHeadline = removeSeriesMeta(slide.subtext || '', seriesMeta.raw);
+  const nextHeadline = cleanedHeadline || fallbackHeadline || headline;
+
+  return {
+    ...slide,
+    headline: compactCoverHeadline(stripInlineCodeMarkers(nextHeadline), slide),
+    subtext: seriesMeta.label,
+  };
+}
+
+function extractSeriesMeta(value) {
+  const text = String(value || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  const match = text.match(/(.+?)\s*공식\s*문서\s*쉽게\s*배우기\s*#?\s*(\d+)\s*\/\s*(\d+)/);
+  if (!match) return null;
+
+  const framework = match[1].trim();
+  const currentPart = match[2];
+  const totalParts = match[3];
+
+  return {
+    raw: match[0],
+    label: `${framework} 공식문서 쉽게 배우기 #${currentPart}/${totalParts}`,
+  };
+}
+
+function removeSeriesMeta(value, rawSeriesText) {
+  return String(value || '')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(rawSeriesText, '')
+    .replace(/^[\s:：|\-–—]+/, '')
+    .replace(/[\s:：|\-–—]+$/, '')
+    .trim();
+}
+
+function stripInlineCodeMarkers(value) {
+  return String(value || '').replace(/`([^`]+)`/g, '$1');
+}
+
+function compactCoverHeadline(headline, slide) {
+  const cleaned = String(headline || '').replace(/\s+/g, ' ').trim();
+  const topic = extractCoverTopic(slide, cleaned);
+  if (!topic) return cleaned;
+
+  const withoutTopic = cleaned
+    .replace(new RegExp(`^${escapeRegExp(topic)}\\s*(?:를|을|이|가|은|는)?\\s*`), '')
+    .replace(/\s+/g, '')
+    .trim();
+
+  if (withoutTopic.length <= 12) return cleaned;
+
+  const compactSuffix = chooseCompactSuffix(cleaned);
+  const separator = compactSuffix.startsWith('의 ') ? '' : ', ';
+  return `${topic}${separator}${compactSuffix}`;
+}
+
+function extractCoverTopic(slide, headline) {
+  const source = [
+    slide.headline,
+    slide.subtext,
+    slide.emphasis,
+    headline,
+  ].filter(Boolean).join(' ');
+
+  const codeMatch = source.match(/`([^`\n]{1,24})`/);
+  if (codeMatch) return codeMatch[1].trim();
+
+  const leadingWord = String(headline || '').trim().match(/^([A-Za-z_$][\w$]*)/);
+  if (leadingWord) return leadingWord[1];
+
+  return '';
+}
+
+function chooseCompactSuffix(text) {
+  if (/조심|주의|위험|실수|문제/.test(text)) return '제대로 알기';
+  if (/이해|헷갈|알아/.test(text)) return '제대로 알기';
+  if (/비교|차이/.test(text)) return '차이 알기';
+  if (/기초|기본/.test(text)) return '제대로 알기';
+  if (/정리|핵심/.test(text)) return '핵심정리';
+  return '한눈에 정리';
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -115,10 +210,27 @@ async function render(opts = {}) {
     throw new Error(`Template directory not found: ${templateDir}`);
   }
 
-  const browser = await puppeteer.launch({
+  const launchOptions = {
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-crash-reporter',
+      '--disable-crashpad',
+      '--no-first-run',
+      '--no-default-browser-check',
+    ],
+  };
+
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  }
+
+  if (process.env.PUPPETEER_USER_DATA_DIR) {
+    launchOptions.userDataDir = process.env.PUPPETEER_USER_DATA_DIR;
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
 
   try {
     const page = await browser.newPage();
