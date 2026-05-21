@@ -15,7 +15,7 @@ const { extractHashtags, removeHashtagsFromCaption, postComment } = require('./i
 
 const IG_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
 const IG_ACCOUNT_ID = process.env.INSTAGRAM_ACCOUNT_ID;
-const IG_API = 'https://graph.instagram.com/v21.0';
+const IG_API = 'https://graph.facebook.com/v21.0';
 
 function parseArgs() {
   const args = process.argv.slice(2);
