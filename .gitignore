@@ -2,7 +2,9 @@ node_modules/
 output/
 sample-output/
 logs/
+workspace/
+data/
+.claude/
 scripts/topic-history.json
 .DS_Store
 .env
-data/

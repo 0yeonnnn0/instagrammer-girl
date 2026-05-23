@@ -43,7 +43,8 @@
           </div>
           <div class="text-sm text-secondary mt-sm" style="line-height: 1.8;">
             <div><%= account.template %> · <%= account.tone %></div>
-            <div><%= account.schedule_cron %> · <%= account.content_type === 'both' ? '카드+릴스' : account.content_type === 'card' ? '카드만' : '릴스만' %></div>
+            <% const dp = (account.schedule_cron || '0 7 * * *').split(' '); const dh = (parseInt(dp[1])+9)%24; const dm = parseInt(dp[0])||0; %>
+            <div>매일 <%= String(dh).padStart(2,'0') %>:<%= String(dm).padStart(2,'0') %> · <%= account.content_type === 'both' ? '카드+릴스' : account.content_type === 'card' ? '카드만' : '릴스만' %></div>
           </div>
           <% if (account.lastJob) { %>
             <div class="text-sm mt-sm flex">

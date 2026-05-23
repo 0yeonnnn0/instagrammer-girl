@@ -1,0 +1,15 @@
+[Unit]
+Description=IG Worker — Instagram Content Automation Scheduler
+After=network.target
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__PROJECT_DIR__
+ExecStart=/usr/bin/node worker.js
+Restart=always
+RestartSec=5
+EnvironmentFile=__PROJECT_DIR__/.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 'use strict';
 
-const IG_API = 'https://graph.instagram.com/v21.0';
+const IG_API = 'https://graph.facebook.com/v21.0';
 
 /**
  * Extract hashtags from caption text.md

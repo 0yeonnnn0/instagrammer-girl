@@ -1,240 +1,197 @@
-# Instagram Card News Generator
+# 📸 IG Dashboard
 
-Claude Code에 **한 줄만 입력**하면 Instagram 카드뉴스가 자동으로 만들어집니다.
+Instagram 카드뉴스 & 릴스를 자동으로 생성하고 업로드하는 대시보드.
 
-```
-카드뉴스 만들어줘: AI 트렌드 2025
-```
+AI CLI(Claude 또는 Codex)가 리서치 → 카피라이팅 → 렌더링 → 업로드 전 과정을 자동화합니다.
 
-리서치 → 팩트체크 → 카피 토론(Team 모드) → 렌더링 → 시각 검토까지 전체 파이프라인이 자동 실행됩니다.
+## 주요 기능
 
-**출력**: `output/` 디렉토리에 1080x1350px PNG 이미지 (Instagram 세로형)
+- **다중 계정 관리** — 여러 Instagram 계정을 하나의 대시보드에서 관리
+- **자동 콘텐츠 생성** — 매일 설정한 시간에 카드뉴스 + 릴스 자동 생성 & 업로드
+- **9종 카드뉴스 템플릿** — studio, minimal, bold, elegant, premium, toss, magazine, clean, blueprint
+- **4종 릴스 템플릿** — clean, toss, bold, studio
+- **템플릿 편집** — 웹에서 HTML 직접 수정 + AI에게 수정 요청
+- **프롬프트 커스터마이징** — 콘텐츠 전략 설정 + 추가 지시사항 + 실시간 테스트
+- **콘텐츠 전략** — 카드뉴스(튜토리얼/팁), 릴스(뉴스/트렌드) 등 전략별 프롬프트
+- **시리즈 모드** — React/Kotlin 같은 프레임워크를 `#1~#N` 순서로 자동 발행
+- **프레임워크 전환** — React `10/10` 완료 후 Kotlin `1/10` 자동 전환
+- **작업 히스토리** — 성공/실패 로그, 생성된 슬라이드 미리보기
 
----
+## 스크린샷
+
+> 토스 스타일 다크 UI
+
+## 기술 스택
+
+| 항목 | 선택 |
+|------|------|
+| Web | Fastify + EJS + Alpine.js + htmx |
+| DB | SQLite (better-sqlite3) |
+| AI | Claude CLI 또는 Codex CLI |
+| 렌더링 | Puppeteer (HTML → PNG) |
+| 영상 | FFmpeg (PNG → MP4) |
+| 업로드 | Instagram Graph API (Cloudinary 중계) |
+| 스케줄 | node-cron (인프로세스) |
+| CSS | Pretendard + 토스 스타일 커스텀 |
 
 ## 시작하기
 
-### 방법 1: 기존 프로젝트 클론
+### 필수 조건
+
+- Node.js 20+
+- Claude CLI 또는 Codex CLI 중 하나
+- FFmpeg (`brew install ffmpeg` / `apt install ffmpeg`)
+- Instagram Business 계정 + Graph API 토큰
+- Cloudinary 계정 (무료 플랜 OK)
+
+### 설치
 
 ```bash
-git clone https://github.com/junghwaYang/instagram-card-news.git
-cd instagram-card-news
+git clone https://github.com/0yeonnnn0/instagrammer-girl.git
+cd instagrammer-girl
 npm install
 ```
 
-Claude Code를 실행하고 카드뉴스를 요청하세요:
+### 환경 변수 설정
 
 ```bash
-claude
+cp .env.example .env
+# .env 파일을 열어서 API 키를 입력하세요
+# 필요하면 AI_PROVIDER=codex 로 변경
 ```
 
-```
-카드뉴스 만들어줘: 2025 디지털 마케팅 트렌드
-```
-
-### 방법 2: 빈 폴더에서 스킬로 세팅
-
-Claude Code 스킬을 설치하면 빈 폴더에서 프로젝트 전체를 자동 생성할 수 있습니다.
-
-**스킬 설치 (택 1)**:
+### 실행
 
 ```bash
-# curl
-curl -sSL https://raw.githubusercontent.com/junghwaYang/card-news-setup/main/install.sh | bash
+# 대시보드 시작
+npm start
 
-# 또는 수동
-mkdir -p ~/.claude/skills/card-news-setup
-curl -sSL https://raw.githubusercontent.com/junghwaYang/card-news-setup/main/SKILL.md \
-  -o ~/.claude/skills/card-news-setup/SKILL.md
+# http://localhost:3000 접속
+# 기본 로그인: admin / admin
 ```
 
-**사용법**:
+계정 설정 화면에서 계정별로 `AI Provider`와 `AI Model`을 따로 지정할 수 있습니다.
+
+### 카드 시리즈 모드
+
+계정 설정의 `주제 설정` 탭에서 카드 주제를 시리즈로 운용할 수 있습니다.
+
+- `card_topic_mode=series`: 백업 주제 대신 시리즈 파트로 생성
+- `card_series_framework`: 예) `React`, `Kotlin`
+- `card_series_current_part`: 현재 파트
+- `card_series_total_parts`: 전체 파트 수
+- `card_series_loop`: 마지막 파트 이후 반복 여부
+
+현재 기본 커리큘럼:
+
+- React 1~10 (컴포넌트/props/state/useEffect 등)
+- Kotlin 1~10 (기본문법/null-safety/컬렉션/코루틴 등)
+
+전환 규칙:
+
+- React `10/10` 성공 시 다음 실행부터 Kotlin `1/10` 자동 전환
+- `card_series_loop=0`일 때도 위 전환 규칙이 우선 적용됩니다.
+
+### 기존 데이터 마이그레이션 (선택)
+
+이미 CLI로 카드뉴스를 생성해왔다면:
 
 ```bash
-mkdir my-card-news && cd my-card-news
-claude
+npm run migrate
 ```
 
-```
-/card-news-setup
-```
+## 배포
 
-스킬이 프로젝트 구조, 템플릿, 스크립트, CLAUDE.md를 모두 생성합니다.
+권장 운영 경로는 `worker.js` 단일 스케줄러입니다.
+`server.js`는 대시보드/API만 담당하고, 자동 실행은 `worker.js`에 맡기세요.
 
----
+이유:
 
-## 사용 예시
+- `server.js`와 `worker.js`가 동시에 스케줄러를 돌면 같은 시간에 중복 게시가 발생할 수 있습니다.
+- 기본값으로 `server.js`의 스케줄러는 비활성화되어 있습니다.
+  - 활성화가 꼭 필요할 때만 `.env`에 `SERVER_RUN_SCHEDULER=1` 설정
 
-```
-카드뉴스 만들어줘: AI 트렌드 2025
-```
-```
-볼드 스타일로 "성공하는 아침 루틴" 카드뉴스 5장
-```
-```
-"ChatGPT 활용법" 카드뉴스, 엘레건트, 10장, 악센트 #FF6B6B
-```
-```
-미니멀 스타일로 투자 기초 지식 카드뉴스, @finance_tips 계정
-```
-
-### 파라미터
-
-| 파라미터 | 기본값 | 설명 |
-|---|---|---|
-| 주제 | (필수) | 카드뉴스 주제 |
-| 톤 | `professional` | professional / casual / energetic |
-| 템플릿 | `clean` | 템플릿 스타일 (아래 8종 참고) |
-| 슬라이드 수 | `7` | 5~12장 |
-| 악센트 색상 | `#8BC34A` | hex 코드 |
-| 계정명 | `my_account` | Instagram 계정명 |
-
----
-
-## 자동 생성 파이프라인
-
-Claude Code가 아래 단계를 순서대로 실행합니다:
-
-```
-Step 1  요청 파싱 — 주제, 톤, 스타일, 슬라이드 수 추출
-  ↓
-Step 2  리서치 — 웹 검색으로 핵심 포인트, 통계, 인용구 수집
-  ↓
-Step 2.5  리서치 검증 — 팩트체커 + 보완 리서처 (병렬 실행, 교차 검증)
-  ↓
-Step 3.5  카피 토론 (Team 모드) — 카피 작가 + 후킹 전문가가 실시간 토론
-           → 후킹 점수 7점 이상 + 양측 합의까지 최대 3라운드
-  ↓
-Step 4  렌더링 — Puppeteer로 HTML → PNG 변환 (1080x1350px)
-  ↓
-Step 5  시각 검토 — 가독성, 텍스트 잘림, 흐름, CTA 명확성 확인
-```
-
-### Team 모드 카피 토론 (Step 3.5)
-
-카피라이팅과 품질 검증이 하나의 Team 모드로 통합되어 있습니다:
-
-- **카피 작가** (`copywriter`): 리서치 기반으로 slides.json 초안 작성
-- **후킹 전문가** (`hook-expert`): 스크롤 스톱 파워, 호기심 유발, CTA 클릭 유도력 평가
-
-두 에이전트가 `SendMessage`로 실시간 피드백을 주고받으며 합의에 도달합니다.
-
----
-
-## 템플릿 스타일 (8종)
-
-| 스타일 | 설명 | 기본 악센트 | 배경 |
-|---|---|---|---|
-| **clean** | 클린 에디토리얼형 | `#8BC34A` 라임그린 | 라이트그레이 |
-| **minimal** | 깔끔한 정보 전달형 | `#2D63E2` 블루 | 화이트 |
-| **bold** | 강렬한 임팩트형 | `#6C5CE7` 퍼플 | 그라디언트 |
-| **elegant** | 고급스러운 감성형 | `#D4AF37` 골드 | 다크 |
-| **premium** | 다크 프리미엄형 | `#A855F7` 바이올렛 | 딥 다크 |
-| **toss** | 토스 스타일 미니멀 | `#3182F6` 블루 | 다크 플랫 |
-| **magazine** | 매거진/SNS형 | `#3B82F6` 블루 | 포토+화이트 |
-| **blueprint** | 블루프린트 프레젠테이션형 | `#7BA7CC` 소프트블루 | 라이트블루그레이 |
-
----
-
-## 슬라이드 타입 (14종)
-
-| 타입 | 용도 | 주요 필드 |
-|---|---|---|
-| `cover` | 표지 (항상 첫 번째) | `headline`, `subtext`, `headline_label` |
-| `content` | 일반 내용 | `headline`, `body` |
-| `content-badge` | 카테고리 태그 | `badge_text`, `headline`, `body` |
-| `content-stat` | 숫자/통계 강조 | `headline`, `emphasis`, `body` |
-| `content-quote` | 인용구/명언 | `headline`(출처), `body`(인용문) |
-| `content-image` | 이미지+텍스트 | `headline`, `body`, `image_url` |
-| `content-steps` | 3단계 프로세스 | `headline`, `step1~3` |
-| `content-list` | 항목 나열 (최대 5개) | `headline`, `item1~5` |
-| `content-split` | 비교/대조 | `headline`, `left/right_title`, `left/right_body` |
-| `content-highlight` | 핵심 강조 박스 | `headline`, `emphasis`, `body` |
-| `content-grid` | 2x2 그리드 | `headline`, `grid1~4_icon/title/desc` |
-| `content-bigdata` | 대형 숫자 강조 | `headline`, `bigdata_number`, `bigdata_unit`, `body` |
-| `content-fullimage` | 풀 배경 이미지 오버레이 | `headline`, `badge_text`, `body`, `badge2_text`, `body2`, `image_url` |
-| `cta` | 행동 유도 (항상 마지막) | `headline`, `cta_text`, `tag1~3` |
-
----
-
-## 수동 렌더링
-
-slides.json을 직접 작성하고 렌더링만 실행할 수도 있습니다:
+### Docker (권장)
 
 ```bash
-node scripts/render.js \
-  --slides workspace/slides.json \
-  --style clean \
-  --output output/ \
-  --accent "#8BC34A" \
-  --account "my_account"
+docker compose up -d
+# http://localhost:3000
 ```
 
-### 샘플 생성
+`restart: unless-stopped`로 부팅 시 자동 실행됩니다.
 
-13개 슬라이드 타입을 모두 포함하는 샘플을 렌더링합니다:
+### Linux (systemd)
 
 ```bash
-node scripts/generate-samples.js
+bash automation/install-linux.sh
 ```
 
-결과: `sample-output/clean/` 디렉토리
+### Raspberry Pi Worker Only (systemd)
 
----
+웹 대시보드 없이 자동화만 돌리려면:
 
-## 텍스트 하이라이트
-
-headline이나 body에 `<span class='highlight'>텍스트</span>`를 사용하면 형광펜 마커 스타일이 적용됩니다.
-
-```json
-{
-  "headline": "2025 <span class='highlight'>디지털 마케팅</span> 트렌드"
-}
+```bash
+npm run worker
 ```
 
----
+라즈베리파이에서 부팅 시 자동 실행하려면:
 
-## 설정 (config.json)
-
-```json
-{
-  "defaults": {
-    "template": "clean",
-    "accent_color": "#8BC34A",
-    "account_name": "my_account",
-    "slide_count": 7
-  }
-}
+```bash
+npm run worker:install:linux
 ```
 
----
+이 경로는 `worker.js`만 실행하며, `data/dashboard.db`에 저장된 활성 계정의 스케줄을 기준으로 카드뉴스/릴스를 생성합니다.
+
+### macOS (launchd)
+
+```bash
+npm run dashboard:install
+```
+
+자동화만 백그라운드로 돌리려면:
+
+```bash
+npm run worker:install
+```
+
+이 경로는 `worker.js`를 `launchd`로 상시 유지하고, 실제 매일 아침 실행 시각은 계정의 `schedule_cron` 설정을 따릅니다.
+
+레거시 단일 스크립트 스케줄러를 과거에 설치했다면 제거:
+
+```bash
+npm run legacy:schedule:uninstall
+```
 
 ## 프로젝트 구조
 
 ```
-instagram-card-news/
-├── templates/           # HTML 템플릿 (8 스타일 x 14 타입)
-│   ├── clean/
-│   ├── minimal/
-│   ├── bold/
-│   ├── elegant/
-│   ├── premium/
-│   ├── toss/
-│   ├── magazine/
-│   └── blueprint/
-├── scripts/
-│   ├── render.js        # Puppeteer HTML → PNG 렌더러
-│   └── generate-samples.js
-├── skill-package/       # Claude Code 스킬 배포 패키지
-├── workspace/           # 슬라이드 JSON 작업 공간
-├── output/              # 최종 PNG 출력
-├── config.json          # 기본 설정
-├── CLAUDE.md            # Claude Code 파이프라인 오케스트레이터 문서
-└── BOOTSTRAP_PROMPT.md  # 빈 폴더 부트스트랩 프롬프트
+├── server.js              # Fastify 엔트리포인트
+├── worker.js              # 자동화 워커(권장 스케줄 실행 주체)
+├── lib/                   # 핵심 로직
+│   ├── db.js              # SQLite 연결
+│   ├── auth.js            # 인증
+│   ├── crypto.js          # 토큰 암호화
+│   ├── scheduler.js       # 계정별 스케줄러
+│   ├── ai-provider.js     # Claude/Codex 실행 추상화
+│   ├── job-runner.js      # 콘텐츠 생성 파이프라인
+│   └── feeds.js           # RSS 수집
+├── routes/                # API 라우트
+├── views/                 # EJS 템플릿
+├── templates/             # 카드뉴스 HTML 템플릿 (9종)
+├── templates-reel/        # 릴스 HTML 템플릿 (4종)
+├── scripts/               # 렌더링/업로드 스크립트
+├── automation/            # OS별 자동 실행 설정
+├── Dockerfile
+└── docker-compose.yml
 ```
 
----
+## 콘텐츠 생성 파이프라인
+
+```
+RSS 수집 → AI 주제 선정 → 리서치 → 카피라이팅 → 카피 토론
+→ HTML 렌더링 (Puppeteer) → 캡션 생성 → Instagram 업로드
+```
 
 ## 라이선스
 
-MIT
+[MIT](LICENSE)

@@ -3,37 +3,40 @@
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>com.yeonnnn.cardnews</string>
+  <string>ig-dashboard</string>
 
   <key>ProgramArguments</key>
   <array>
     <string>/usr/local/bin/node</string>
-    <string>scripts/daily.js</string>
+    <string>server.js</string>
   </array>
 
   <key>WorkingDirectory</key>
   <string>__PROJECT_DIR__</string>
 
-  <key>StartCalendarInterval</key>
-  <dict>
-    <key>Hour</key>
-    <integer>7</integer>
-    <key>Minute</key>
-    <integer>0</integer>
-  </dict>
-
   <key>StandardOutPath</key>
-  <string>__PROJECT_DIR__/logs/launchd-stdout.log</string>
+  <string>__PROJECT_DIR__/logs/dashboard-stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>__PROJECT_DIR__/logs/launchd-stderr.log</string>
+  <string>__PROJECT_DIR__/logs/dashboard-stderr.log</string>
 
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
     <string>__HOME__/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+    <key>ENCRYPTION_KEY</key>
+    <string>__ENCRYPTION_KEY__</string>
+    <key>SESSION_SECRET</key>
+    <string>__SESSION_SECRET__</string>
+    <key>ADMIN_USERNAME</key>
+    <string>__ADMIN_USERNAME__</string>
+    <key>ADMIN_PASSWORD</key>
+    <string>__ADMIN_PASSWORD__</string>
   </dict>
 
   <key>RunAtLoad</key>
-  <false/>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
 </dict>
 </plist>

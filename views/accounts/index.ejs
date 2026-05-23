@@ -32,7 +32,8 @@
               <td><a href="/accounts/<%= a.id %>" style="font-weight: 600; color: var(--text-primary);"><%= a.name %></a></td>
               <td class="text-secondary"><%= a.template %></td>
               <td><span class="badge badge-blue"><%= a.content_type === 'both' ? '카드+릴스' : a.content_type %></span></td>
-              <td class="text-sm text-tertiary"><%= a.schedule_cron %></td>
+              <% const cp = (a.schedule_cron || '0 7 * * *').split(' '); const uh = parseInt(cp[1])||0; const um = parseInt(cp[0])||0; const kh = (uh+9)%24; %>
+              <td class="text-sm text-tertiary">매일 <%= String(kh).padStart(2,'0') %>:<%= String(um).padStart(2,'0') %> (KST)</td>
               <td><a href="/accounts/<%= a.id %>/edit" class="btn btn-ghost btn-sm">설정</a></td>
             </tr>
           <% }) %>

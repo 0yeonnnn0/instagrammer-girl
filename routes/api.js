@@ -4,6 +4,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { requireAuth } = require('../lib/auth');
+const { runPrompt, defaultModelFor } = require('../lib/ai-provider');
 
 const ROOT = path.join(__dirname, '..');
 const TEMPLATES_DIR = path.join(ROOT, 'templates');
@@ -103,20 +104,24 @@ module.exports = async function (fastify) {
 
   // ── Prompt test ──
   fastify.post('/api/prompt-test', async (request, reply) => {
-    const { prompt } = request.body || {};
+    const { prompt, provider, model } = request.body || {};
     if (!prompt) return reply.send({ error: '프롬프트가 비어있습니다.' });
 
     const testPrompt = `[테스트 모드 — 업로드하지 마세요. 렌더링도 하지 마세요. 카피라이팅 결과만 JSON으로 보여주세요.]\n\n${prompt.replace(/업로드까지 해줘[.]?/g, '카피라이팅 결과만 JSON으로 보여줘.')}`;
 
-    try {
-      const result = execSync(
-        `claude -p --model sonnet --max-budget-usd 1 ${JSON.stringify(testPrompt)}`,
-        { cwd: ROOT, encoding: 'utf8', timeout: 120_000, stdio: ['pipe', 'pipe', 'pipe'] }
-      );
-      return reply.send({ result: result.trim() });
-    } catch (err) {
-      return reply.send({ error: `실행 실패: ${(err.stdout || err.stderr || err.message).substring(0, 2000)}` });
+    const result = runPrompt(testPrompt, {
+      cwd: ROOT,
+      provider,
+      model: model || defaultModelFor(provider),
+      budgetUsd: provider === 'claude' ? 1 : undefined,
+      timeoutMs: 120_000,
+    });
+
+    if (!result.ok) {
+      return reply.send({ error: `실행 실패: ${result.message.substring(0, 2000)}` });
     }
+
+    return reply.send({ result: result.output });
   });
 
   // ── Template preview slides ──

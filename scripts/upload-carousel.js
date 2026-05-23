@@ -15,15 +15,16 @@ const { extractHashtags, removeHashtagsFromCaption, postComment } = require('./i
 
 const IG_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
 const IG_ACCOUNT_ID = process.env.INSTAGRAM_ACCOUNT_ID;
-const IG_API = 'https://graph.instagram.com/v21.0';
+const IG_API = 'https://graph.facebook.com/v21.0';
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const opts = { dir: null, dryRun: false };
+  const opts = { dir: null, dryRun: false, caption: null };
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case '--dir': opts.dir = args[++i]; break;
       case '--dry-run': opts.dryRun = true; break;
+      case '--caption': opts.caption = args[++i]; break;
     }
   }
   if (!opts.dir) {
@@ -212,7 +213,7 @@ async function main() {
     process.exit(1);
   }
 
-  const caption = getCaption(dir);
+  const caption = opts.caption != null ? opts.caption : getCaption(dir);
   const folderName = path.basename(dir);
 
   console.log('═══════════════════════════════════════════');

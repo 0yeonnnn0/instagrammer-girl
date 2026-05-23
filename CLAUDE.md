@@ -68,7 +68,7 @@ Claude Code가 오케스트레이터 역할을 하며, 리서치 → 카피라�
 | `template` | `minimal` | 템플릿 스타일 |
 | `slide_count` | `7` | 슬라이드 수 (최소 5, 최대 12) |
 | `accent_color` | `#2D63E2` | 악센트 색상 (hex) |
-| `account_name` | `yeonnnn.dev` | 계정명 (@ 없이 입력, 템플릿에서 자동 추가) |
+| `account_name` | `my_account` | 계정명 (@ 없이 입력, 템플릿에서 자동 추가) |
 
 명시되지 않은 파라미터는 `config.json`의 기본값을 사용합니다.
 
@@ -252,7 +252,7 @@ node scripts/render.js \
 
 {CTA 문구 — 저장/공유/팔로우 유도}
 👉 도움이 됐다면 저장 & 공유해주세요!
-👉 @yeonnnn.dev 팔로우하고 매주 인사이트 받기
+👉 @my_account 팔로우하고 매주 인사이트 받기
 
 —
 

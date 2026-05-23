@@ -16,7 +16,8 @@ const { extractHashtags, removeHashtagsFromCaption, postComment } = require('./i
 
 const IG_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
 const IG_ACCOUNT_ID = process.env.INSTAGRAM_ACCOUNT_ID;
-const IG_API = 'https://graph.instagram.com/v21.0';
+const IG_API = 'https://graph.facebook.com/v21.0';
+const MAX_REEL_CAPTION_LENGTH = 1800;
 
 // ── CLI Args ────────────────────────────────────────────
 function parseArgs() {
@@ -62,6 +63,20 @@ function getCaption(dir) {
   const textPath = path.join(dir, 'text.md');
   if (!fs.existsSync(textPath)) return '';
   return fs.readFileSync(textPath, 'utf8').trim();
+}
+
+function truncateCaption(caption, maxLength = MAX_REEL_CAPTION_LENGTH) {
+  if (caption.length <= maxLength) return caption;
+
+  const hashtags = extractHashtags(caption);
+  const body = hashtags ? removeHashtagsFromCaption(caption) : caption;
+  const suffix = hashtags ? `\n\n${hashtags}` : '';
+  const available = Math.max(0, maxLength - suffix.length - 4);
+  const truncatedBody = body.slice(0, available).trimEnd();
+  const result = `${truncatedBody}...\n\n${hashtags || ''}`.trim();
+
+  console.log(`  ⚠️ Caption truncated from ${caption.length} to ${result.length} chars`);
+  return result;
 }
 
 function getVideoFile(dir) {
@@ -202,7 +217,7 @@ async function main() {
   }
 
   const videoPath = getVideoFile(dir);
-  const caption = getCaption(dir);
+  const caption = truncateCaption(getCaption(dir));
   const folderName = path.basename(dir);
 
   console.log('═══════════════════════════════════════════');

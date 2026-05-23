@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ig-worker</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>worker.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_DIR__</string>
+
+  <key>StandardOutPath</key>
+  <string>__PROJECT_DIR__/logs/worker-stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>__PROJECT_DIR__/logs/worker-stderr.log</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>__NODE_BIN_DIR__:__HOME__/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+    <key>ENCRYPTION_KEY</key>
+    <string>__ENCRYPTION_KEY__</string>
+    <key>SESSION_SECRET</key>
+    <string>__SESSION_SECRET__</string>
+    <key>ADMIN_USERNAME</key>
+    <string>__ADMIN_USERNAME__</string>
+    <key>ADMIN_PASSWORD</key>
+    <string>__ADMIN_PASSWORD__</string>
+    <key>AI_PROVIDER</key>
+    <string>__AI_PROVIDER__</string>
+    <key>AI_MODEL</key>
+    <string>__AI_MODEL__</string>
+    <key>PUPPETEER_EXECUTABLE_PATH</key>
+    <string>__PUPPETEER_EXECUTABLE_PATH__</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+</dict>
+</plist>

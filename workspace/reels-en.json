@@ -1,9 +1,0 @@
-[
-  {"scene": 1, "type": "hook", "badge_text": "SHOCKING", "headline": "Google already\ndumped Git", "subtext": "The future of version control is changing", "duration": 2},
-  {"scene": 2, "type": "stat", "headline": "Developers using Git worldwide", "emphasis": "94%", "subtext": "", "body": "Behind the dominance,\nstructural limits are showing", "duration": 2.5},
-  {"scene": 3, "type": "comparison", "headline": "Two faces of Git", "left_title": "Strengths", "left_body": "Fast local operations\nOffline workflows\nMassive ecosystem", "right_title": "Limits", "right_body": "Large files? Painful\nMonorepo? Doesn't scale\nSteep learning curve", "duration": 3},
-  {"scene": 4, "type": "point", "badge_number": "01", "headline": "Jujutsu\nGoogle's pick to\nreplace Git", "body": "No staging area, full undo\n100% Git-compatible\nSwitch without your team knowing", "duration": 2.5},
-  {"scene": 5, "type": "list", "headline": "Next-gen VCS\nlandscape", "item1": "Jujutsu — Google company-wide", "item2": "Sapling — Meta's monorepo tool", "item3": "Pijul — Mathematically conflict-free", "item4": "GitLab Duo — AI-native VCS", "item5": "GitButler — AI branch management", "duration": 3},
-  {"scene": 6, "type": "highlight", "headline": "VCS 2026 Industry Report", "emphasis": "Repositories evolved\nfrom passive storage\nto reasoning partners", "body": "", "duration": 2.5},
-  {"scene": 7, "type": "cta", "headline": "Ready for\nthe post-Git era?", "subtext": "Jujutsu tutorial coming next week", "cta_text": "Follow", "tag1": "#Git", "tag2": "#Jujutsu", "tag3": "#VCS", "duration": 2}
-]

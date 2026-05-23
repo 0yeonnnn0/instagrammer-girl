@@ -13,9 +13,15 @@
     "daily": "node scripts/daily.js",
     "daily:dry-run": "node scripts/daily.js --dry-run",
     "migrate": "node scripts/migrate-to-dashboard.js",
+    "dashboard:install": "bash automation/install-dashboard.sh",
+    "dashboard:uninstall": "launchctl unload ~/Library/LaunchAgents/ig-dashboard.plist",
+    "dashboard:status": "launchctl list | grep ig-dashboard",
     "schedule:install": "bash automation/install.sh",
     "schedule:uninstall": "bash automation/uninstall.sh",
     "schedule:status": "launchctl list | grep cardnews"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "cloudinary": "^2.9.0",

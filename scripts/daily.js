@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { runPrompt } = require('../lib/ai-provider');
 
 // ── Paths ──────────────────────────────────────────────
 const ROOT = path.join(__dirname, '..');
@@ -169,7 +170,14 @@ async function collectFeeds() {
 // ── Topic Selection ────────────────────────────────────
 
 // Reel topic: from RSS feeds (news/trending)
-function selectReelTopicViaClaude(articles, history) {
+function getAiConfig() {
+  return {
+    provider: auto.ai_provider || process.env.AI_PROVIDER || 'claude',
+    model: auto.ai_model || process.env.AI_MODEL || null,
+  };
+}
+
+function selectReelTopicViaProvider(articles, history) {
   const articleList = articles
     .map((a, i) => `${i + 1}. [${a.source}] ${a.title}`)
     .join('\n');
@@ -195,25 +203,24 @@ ${articleList}
 
 한국어로 릴스 제목만 한 줄로 출력해주세요. 다른 설명 없이 제목만.`;
 
-  log('INFO', 'Selecting reel topic via Claude...');
+  const ai = getAiConfig();
+  log('INFO', `Selecting reel topic via ${ai.provider}...`);
 
-  try {
-    const result = execSync(
-      `claude -p --model sonnet ${JSON.stringify(prompt)}`,
-      {
-        cwd: ROOT,
-        encoding: 'utf8',
-        timeout: 180_000,
-        stdio: ['pipe', 'pipe', 'pipe'],
-      }
-    );
-    const topic = result.trim().split('\n').pop().trim();
+  const result = runPrompt(prompt, {
+    cwd: ROOT,
+    provider: ai.provider,
+    model: ai.model,
+    timeoutMs: 180_000,
+  });
+
+  if (result.ok) {
+    const topic = result.output.split('\n').pop().trim();
     log('INFO', `Selected reel topic: ${topic}`);
     return topic;
-  } catch (err) {
-    log('ERROR', `Claude reel topic selection failed: ${err.message}`);
-    return null;
   }
+
+  log('ERROR', `${ai.provider} reel topic selection failed: ${result.message}`);
+  return null;
 }
 
 // Card topic: from backup_topics (tutorial/guide/tip)
@@ -244,37 +251,39 @@ function selectCardTopic(history) {
   return backups[0];
 }
 
-// ── Generation via Claude ──────────────────────────────
+// ── Generation via AI provider ─────────────────────────
 
 function generateContent(type, topic, attempt = 1) {
   const template = auto.template || 'studio';
   const tone = auto.tone || 'professional';
   const budget = auto.max_budget_per_run || 5.0;
   const timeoutMin = auto.timeout_minutes || 15;
+  const ai = getAiConfig();
 
   const claudePrompt = type === 'reel'
     ? `"${topic}" 주제로 릴스 만들어줘. 톤: ${tone}, 릴스 템플릿: clean, 업로드까지 해줘.`
     : `"${topic}" 주제로 카드뉴스 만들어줘. 톤: ${tone}, 템플릿: ${template}, 업로드까지 해줘.`;
 
   log('INFO', `Generating ${type} (attempt ${attempt}): ${topic}`);
-  log('INFO', `Template: ${template}, Tone: ${tone}, Budget: $${budget}`);
+  log('INFO', `Template: ${template}, Tone: ${tone}, Provider: ${ai.provider}, Budget: $${budget}`);
 
-  try {
-    execSync(
-      `claude -p --dangerously-skip-permissions --max-budget-usd ${budget} ${JSON.stringify(claudePrompt)}`,
-      {
-        cwd: ROOT,
-        encoding: 'utf8',
-        timeout: timeoutMin * 60 * 1000,
-        stdio: ['pipe', 'pipe', 'pipe'],
-      }
-    );
-    log('INFO', `Claude ${type} pipeline completed`);
+  const result = runPrompt(claudePrompt, {
+    cwd: ROOT,
+    provider: ai.provider,
+    model: ai.model,
+    budgetUsd: budget,
+    timeoutMs: timeoutMin * 60 * 1000,
+    skipPermissions: true,
+    env: process.env,
+  });
+
+  if (result.ok) {
+    log('INFO', `${ai.provider} ${type} pipeline completed`);
     return true;
-  } catch (err) {
-    log('ERROR', `Claude ${type} pipeline failed (attempt ${attempt}): ${err.message}`);
-    return false;
   }
+
+  log('ERROR', `${ai.provider} ${type} pipeline failed (attempt ${attempt}): ${result.message}`);
+  return false;
 }
 
 // ── Output Validation ──────────────────────────────────
@@ -362,11 +371,11 @@ async function main() {
   if (!CARD_ONLY) {
     log('INFO', '── REEL: News/Trending ──');
 
-    const articles = await collectFeeds();
-    let reelTopic;
-    if (articles) {
-      reelTopic = selectReelTopicViaClaude(articles, history);
-    }
+      const articles = await collectFeeds();
+      let reelTopic;
+      if (articles) {
+      reelTopic = selectReelTopicViaProvider(articles, history);
+      }
     if (!reelTopic) {
       log('WARN', 'No reel topic selected, skipping reel');
     } else {

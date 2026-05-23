@@ -47,7 +47,13 @@ fastify.register(require('./routes/api'));
 
 // Start scheduler
 const scheduler = require('./lib/scheduler');
-scheduler.initAll();
+const runSchedulerInServer = process.env.SERVER_RUN_SCHEDULER === '1';
+if (runSchedulerInServer) {
+  scheduler.initAll();
+  console.log('[server] Scheduler enabled in server process (SERVER_RUN_SCHEDULER=1)');
+} else {
+  console.log('[server] Scheduler disabled in server process; use worker.js for automation');
+}
 
 // Start
 const PORT = process.env.PORT || 3000;
